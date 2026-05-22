@@ -22,6 +22,10 @@
     --ink:#1b2a44;
     --ink-soft:#3a4a64;
     --red:#b13a3a;          /* now-line: muted nordic red */
+    --amber-700:#a35a14;    /* shopping accent: warm amber */
+    --amber-500:#c97a2a;
+    --amber-200:#f0d4a8;
+    --amber-100:#fbeed5;
     --shadow: 0 1px 0 rgba(27,42,68,.06), 0 8px 24px rgba(27,42,68,.08);
     --shadow-strong: 0 12px 40px rgba(27,42,68,.18);
     --serif:'Fraunces', Georgia, serif;
@@ -344,6 +348,38 @@
     border-color: rgba(90,125,163,.28);
     box-shadow: var(--shadow);
   }
+
+  /* shopping window in timeline */
+  .tl-item.shop .tl-dot{
+    background: var(--amber-500);
+    border-color: var(--amber-700);
+  }
+  .tl-item.shop .tl-time{
+    color: var(--amber-700);
+  }
+  .tl-item.shop .tl-content{
+    background: linear-gradient(180deg, var(--amber-100) 0%, rgba(251,238,213,.72) 100%);
+    border-color: var(--amber-200);
+  }
+  .tl-item.shop.major .tl-content{
+    background: linear-gradient(180deg, var(--amber-100) 0%, var(--amber-200) 100%);
+    border-color: var(--amber-500);
+    box-shadow: 0 2px 12px rgba(163,90,20,.12);
+  }
+  .tl-item.shop .tl-text strong{ color: var(--amber-700);}
+  .shop-tag{
+    display: inline-block;
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--amber-500);
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-right: 6px;
+    vertical-align: 1px;
+  }
   .tl-text{
     font-size: 13px; line-height: 1.5;
     color: var(--ink);
@@ -383,23 +419,31 @@
   /* FOOTER ~1/5 */
   .day-footer{
     flex: 0 0 auto;
-    padding: 12px 18px max(env(safe-area-inset-bottom), 14px);
+    padding: 12px 14px max(env(safe-area-inset-bottom), 14px);
     background: linear-gradient(180deg, transparent 0%, var(--cream-2) 30%, var(--cream-2) 100%);
     border-top: 1px solid rgba(90,125,163,.18);
-    display:flex; gap: 10px;
+    display:flex; gap: 8px;
   }
   .foot-btn{
     flex:1;
     background: var(--cream);
     border: 1px solid rgba(27,42,68,.15);
     border-radius: 12px;
-    padding: 11px 10px;
+    padding: 11px 6px;
     cursor:pointer;
     display:flex; flex-direction:column; align-items:center; gap:3px;
     transition: transform .12s, background .15s;
     font-family: var(--sans);
+    min-width: 0;
   }
   .foot-btn:active{ transform: scale(.97); background: var(--blue-100);}
+  .foot-btn.shop-btn{
+    background: var(--amber-100);
+    border-color: var(--amber-200);
+  }
+  .foot-btn.shop-btn:active{ background: var(--amber-200);}
+  .foot-btn.shop-btn .ico{ color: var(--amber-700);}
+  .foot-btn.shop-btn .lbl{ color: var(--amber-700);}
   .foot-btn .ico{
     width:20px; height:20px; color: var(--blue-700);
   }
@@ -409,6 +453,10 @@
   }
   .foot-btn .sub{
     font-size: 9.5px; color: var(--ink-soft); letter-spacing:.04em;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   /* ============ MODAL (Stories / Vocab / Stay / Eat) ============ */
@@ -636,6 +684,105 @@
   .pc-addr .at{
     overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
   }
+
+  /* ---- shopping modal ---- */
+  .shop-window{
+    background: linear-gradient(135deg, var(--amber-700) 0%, var(--amber-500) 100%);
+    color: var(--cream);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+  }
+  .shop-window .sw-kicker{
+    font-size: 10px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--amber-100);
+    opacity: .9;
+    margin-bottom: 4px;
+  }
+  .shop-window .sw-time{
+    font-family: var(--serif);
+    font-size: 19px;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .shop-window .sw-where{
+    font-size: 12.5px;
+    color: var(--amber-100);
+    line-height: 1.45;
+  }
+  .shop-window .sw-where strong{
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .shop-section{
+    margin-bottom: 16px;
+  }
+  .shop-section h4{
+    font-family: var(--serif);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--amber-700);
+    margin: 0 0 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--amber-200);
+    letter-spacing: -.005em;
+  }
+  .shop-list{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .shop-list li{
+    font-size: 12.5px;
+    color: var(--ink);
+    line-height: 1.55;
+    padding: 6px 0 6px 14px;
+    position: relative;
+    border-bottom: 1px dashed rgba(163,90,20,.15);
+  }
+  .shop-list li:last-child{ border-bottom: none;}
+  .shop-list li::before{
+    content: "";
+    position: absolute;
+    left: 0; top: 13px;
+    width: 5px; height: 5px;
+    background: var(--amber-500);
+    border-radius: 50%;
+  }
+  .shop-list li strong{
+    color: var(--blue-900);
+    font-weight: 600;
+  }
+  .shop-list li em{
+    font-style: normal;
+    color: var(--amber-700);
+    font-weight: 500;
+  }
+  .shop-tips{
+    background: var(--amber-100);
+    border: 1px solid var(--amber-200);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-top: 14px;
+  }
+  .shop-tips h4{
+    margin: 0 0 6px;
+    font-family: var(--serif);
+    font-size: 13.5px;
+    color: var(--amber-700);
+    font-weight: 600;
+  }
+  .shop-tips p{
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    margin: 4px 0;
+  }
+  .shop-tips p strong{ color: var(--amber-700);}
 
   /* Toast */
   .toast{
@@ -1229,6 +1376,46 @@ const TRIP = [
       address: "Loviselundsvägen 132, 165 70 Hässelby-Vällingby, Sweden",
       note: "连住第二晚。明天 08:30 出发哥德堡。"
     },
+    shop: {
+      sub: "Drottninggatan · 顺路",
+      kicker: "斯德哥尔摩 · 顺路扫货",
+      title: "<em>Stockholm</em> shopping",
+      window: {
+        kicker: "今日购物窗口",
+        time: "11:00–11:45",
+        where: "<strong>Drottninggatan 皇后大街</strong> · 时间最紧的城市,只够 45 分钟。认真买就钻进 <strong>NK 百货</strong>(Nordiska Kompaniet,瑞典本土品牌一站齐,退税柜台也在里面)。"
+      },
+      sections: [
+        {
+          title: "瑞典本土设计 · NK 百货里",
+          items: [
+            "<strong>Acne Studios</strong> — 瑞典轻奢,牛仔裤、皮衣经典",
+            "<strong>Filippa K</strong> — 简约时装,商务通勤",
+            "<strong>Tiger of Sweden</strong> — 男装西服",
+            "<strong>Iittala / Marimekko</strong> — 北欧家居,杯子餐具"
+          ]
+        },
+        {
+          title: "斯德哥尔摩独有",
+          items: [
+            "<strong>Svenskt Tenn</strong> — 高端家居纺织,Josef Frank 花卉印花经典 <em>(靠垫套最适合带回,但店在 Strandvägen 5,远,可舍)</em>",
+            "<strong>Designtorget</strong> — 北欧设计师作品集合店,小件创意礼物最多",
+            "<strong>Fjällräven</strong> — Kånken 双肩包,比国内便宜很多 + 退税"
+          ]
+        },
+        {
+          title: "食品 · 超市 ICA 买就行",
+          items: [
+            "<strong>Marabou</strong> 巧克力(Daim 焦糖)、<strong>Pepparkakor</strong> 姜饼、<strong>Knäckebröd</strong> 脆面包",
+            "<strong>越橘 lingonsylt</strong>、云莓 hjortron 果酱"
+          ]
+        }
+      ],
+      tips: {
+        title: "时间紧的玩法",
+        body: "<p>D4 只有 45 分钟,<strong>大件别在斯德哥尔摩买</strong>——重头戏放在 D7 哥本哈根(退税柜台离机场最近)。今天扫些瑞典独有的(Svenskt Tenn 印花、Acne)。</p><p>退税单店 SEK 200 起退,在 NK 一家百货刷比小店一张张退表快得多。瑞典买的东西也在 CPH 盖章 — 同一申根关税区。</p>"
+      }
+    },
     eat: [
       { featured:true, name:"Pelikan (1733)", tag:"今晚推荐",
         meta:"Södermalm · 周二 11:30–01:00 · 人均 350–500 SEK",
@@ -1244,8 +1431,8 @@ const TRIP = [
       { time:"09:30–11:00", label:"瑞典皇宫 Kungliga slottet", major:true,
         note:"10:00 开门。门票 220 SEK 4 合 1：国家公寓 + 军械库 + 三王冠博物馆 + Gustav III 古董博物馆。",
         address:"Kungliga slottet, 107 70 Stockholm, Sweden" },
-      { time:"11:00–11:45", label:"皇后大街 Drottningatan 步行",
-        note:"17 世纪规划，1989 改步行。",
+      { time:"11:00–11:45", label:"皇后大街 Drottningatan 步行 + 购物", shop:true,
+        note:"17 世纪规划，1989 改步行。瑞典本土品牌一条街——顺手扫货,认真买就在 NK 百货。",
         address:"Drottninggatan, Stockholm, Sweden" },
       { time:"11:45–12:15", label:"占位 · 卫兵换岗" },
       { time:"12:15–13:00", label:"卫兵换岗 Vaktparad", major:true,
@@ -1332,6 +1519,40 @@ const TRIP = [
       address: "Hälsovägen 40, 444 97 Svenshögen, Sweden",
       note: "白夜还亮。早起可以散步看花岗岩裸岩——青铜时代岩画 hällristningar 原型。"
     },
+    shop: {
+      sub: "Avenyn 大道 · 顺手",
+      kicker: "哥德堡 · Avenyn 顺手扫",
+      title: "<em>Göteborg</em> shopping a 段",
+      window: {
+        kicker: "今日购物窗口",
+        time: "16:30–18:00",
+        where: "<strong>Avenyn 大道</strong> 是哥德堡主商业街,大牌都在那。HAGA 老街区留 D6 早上专门逛(小店、糖店、咖啡豆都在那)。"
+      },
+      sections: [
+        {
+          title: "瑞典本土时装",
+          items: [
+            "<strong>Acne Studios</strong> — 瑞典轻奢,Avenyn 大道有店",
+            "<strong>Filippa K</strong> — 简约时装",
+            "<strong>Tiger of Sweden</strong> — 男装西服",
+            "<strong>Fjällräven</strong> — Kånken 双肩包,比国内便宜很多 + 退税",
+            "<strong>H&M 旗舰</strong> 在 Avenyn,款式比国内全"
+          ]
+        },
+        {
+          title: "玻璃 / 家居 · 集中购点",
+          items: [
+            "<strong>Iittala / Kosta Boda / Orrefors</strong> — 瑞典玻璃三大牌,Kosta Boda 的设计师款最有收藏价值",
+            "<strong>Sandqvist</strong> — 瑞典本土帆布包",
+            "<strong>Dala Horse</strong> 达拉木马 — 红色彩绘小木马,瑞典国民符号"
+          ]
+        }
+      ],
+      tips: {
+        title: "今天 vs 明早",
+        body: "<p>今晚 18 点要进 Feskekôrka 吃饭,所以下午 1.5 小时主要看 Avenyn 大道 + 大牌。<strong>HAGA 区</strong>(肉桂卷、糖店、咖啡豆、设计小店)留 D6 早上 08:30 去——人少光线好,逛起来最舒服。</p><p>瑞典退税单店 SEK 200 起退,集中刷一家百货(Nordstan)再退最省事。</p>"
+      }
+    },
     eat: [
       { featured:true, name:"Feskekôrka 海鲜餐厅", tag:"今晚推荐",
         meta:"哥德堡 · 周三 10:00–21:00 · 人均 350–600 SEK",
@@ -1354,8 +1575,8 @@ const TRIP = [
       { time:"15:45–16:30", label:"哥德堡大教堂 Domkyrka",
         note:"外观 + 内部，免费。1815 新古典主义重建。内部 Carl Larsson 1880s 壁画——定义了'瑞典美学'的视觉模板。",
         address:"Västra Hamngatan 17, 411 17 Göteborg, Sweden" },
-      { time:"16:30–18:00", label:"哥德堡老城 / 港口散步", major:true,
-        note:"Gustaf Adolfs torg + 市政厅 + 运河。哥德堡 1621 Gustavus Adolphus 创建，荷兰人做城市规划——运河+棋盘格跟阿姆斯特丹同模板。" },
+      { time:"16:30–18:00", label:"哥德堡老城 / 港口散步 + Avenyn 购物", major:true, shop:true,
+        note:"Gustaf Adolfs torg + 市政厅 + 运河,然后顺着 Avenyn 大道逛(瑞典本土品牌 Acne / Filippa K / Fjällräven 都在这条街)。哥德堡 1621 Gustavus Adolphus 创建,荷兰人做城市规划——运河+棋盘格跟阿姆斯特丹同模板。" },
       { time:"18:00–19:30", label:"Feskekôrka 海鲜晚餐", major:true,
         note:"鱼教堂建筑里。1874 开业。2020–24 翻修后重开，二楼是海鲜餐厅。",
         address:"Fisktorget 4, 411 20 Göteborg, Sweden" },
@@ -1424,6 +1645,40 @@ const TRIP = [
       address: "A&O Copenhagen Sydhavn, Sydhavns Pl. 4, 2450 København, Denmark",
       note: "另一个房：A&O Copenhagen Nørrebro, Tagensvej 135-137, 2200 København。A&O 停车通常付费街边或附近停车场。"
     },
+    shop: {
+      sub: "HAGA 早 + Strøget 晚",
+      kicker: "哥德堡 HAGA + 哥本哈根热身",
+      title: "<em>Göteborg → CPH</em> shop",
+      window: {
+        kicker: "今日两个窗口",
+        time: "08:30–09:30 早 · 16:00–18:00 晚",
+        where: "<strong>早</strong>: 哥德堡 Haga Nygata,人少光线好,逛小店糖店咖啡豆。<strong>晚</strong>: 入住后到 Strøget 步行街热身,看准位置——D7 早上才是哥本哈根真正的主战场。"
+      },
+      sections: [
+        {
+          title: "HAGA 早上重点 (哥德堡)",
+          items: [
+            "<strong>Da Matteo</strong> — 哥德堡本土精品咖啡烘焙坊,HAGA 区就有店,买咖啡豆带走",
+            "<strong>Café Husaren</strong> — 巨型肉桂卷 Hagabullen 是镇店,周边纪念品也好买",
+            "<strong>Polkagris 糖店</strong> — 红白条纹糖,HAGA 老街上有店",
+            "小设计师店、手工艺、二手书店,鹅卵石街一路逛过去"
+          ]
+        },
+        {
+          title: "Strøget 步行街晚上看点 (哥本哈根)",
+          items: [
+            "<strong>Royal Copenhagen 旗舰店</strong> @ Amagertorv 6 — 看准位置,D7 进店",
+            "<strong>Illum 百货</strong> — Strøget 中段最大,退税柜台集中刷",
+            "<strong>Georg Jensen</strong>、<strong>HAY</strong>、<strong>Bang & Olufsen</strong> 都在 Strøget 沿线",
+            "<strong>Lakrids by Bülow</strong> — 黑色甘草巧克力球,丹麦特产"
+          ]
+        }
+      ],
+      tips: {
+        title: "节奏建议",
+        body: "<p>HAGA 一上午只能 1 小时——挑 Da Matteo 咖啡豆 + 1 件设计小件足够,不要恋战(D6 行程很满,12 点要上 E6 南下马尔默)。</p><p>哥本哈根 16:00–18:00 是<strong>探路</strong>,不是主战场——把 Strøget 走通,Royal Copenhagen 和 Illum 的位置看准,D7 早上 08:30 开门直接进。</p>"
+      }
+    },
     eat: [
       { featured:true, name:"Restaurant Palægade", tag:"今晚推荐",
         meta:"哥本哈根 · 周四 11:30–17 + 18–00 · 人均 400–700 DKK · 4.6 星",
@@ -1446,8 +1701,8 @@ const TRIP = [
       { time:"07:30", label:"Svenshögen 出发", major:true, note:"早起，今天满。" },
       { time:"07:30–08:15", label:"Svenshögen → 哥德堡市中心 60 km / 45 分钟" },
       { time:"08:15–08:30", label:"哥德堡停车 HAGA 周边或 Lorensberg Q-Park" },
-      { time:"08:30–09:30", label:"HAGA 老街区", major:true,
-        note:"鹅卵石街、19 世纪 landshövdingehus，早上人少最美。",
+      { time:"08:30–09:30", label:"HAGA 老街区 + 早上购物", major:true, shop:true,
+        note:"鹅卵石街、19 世纪 landshövdingehus,早上人少最美。Haga Nygata 小店、糖店、Da Matteo 咖啡豆烘焙坊都在这条街——D5 没买的现在补。",
         address:"Haga Nygata, 411 22 Göteborg, Sweden" },
       { time:"09:00–09:30", label:"Café Husaren · Hagabullen", major:true,
         note:"巨型肉桂卷直径 30 cm，半斤重——一个能吃一上午。瑞典 fika 文化的工业革命遗产。",
@@ -1474,6 +1729,9 @@ const TRIP = [
         note:"再付一次（网上 423 / 现场 470 DKK）。" },
       { time:"15:10–16:00", label:"抵哥本哈根，A&O 办入住",
         address:"Sydhavns Pl. 4, 2450 København, Denmark" },
+      { time:"16:00–18:00", label:"Strøget 步行街初探 (热身)", shop:true,
+        note:"从市政厅 Rådhuspladsen 走到 Kongens Nytorv,主要品牌全在这条线上。今天主要 window shopping + 看准 Royal Copenhagen 旗舰店、Illum 百货位置,主战场 D7 早上再来。",
+        address:"Strøget, 1160 København, Denmark" },
       { time:"18:30–20:30", label:"晚餐 · Restaurant Palægade", major:true,
         address:"Palægade 8, 1261 København, Denmark" }
     ],
@@ -1539,6 +1797,59 @@ const TRIP = [
       address: "Furesøvej 16, 3520 Farum, Denmark",
       note: "明天 D8 早上要再玩哥本哈根 + 送机，21:00 前到 Farum 休息。"
     },
+    shop: {
+      sub: "Strøget · ⭐ 主战场",
+      kicker: "哥本哈根 · 全程购物高潮",
+      title: "<em>Copenhagen</em> ⭐ 主战场",
+      window: {
+        kicker: "⭐ 全程最大块",
+        time: "08:30–11:30",
+        where: "<strong>Strøget 步行街</strong> 从市政厅延伸到 Kongens Nytorv,主要品牌全在这条线。<strong>Illum 是中间最大的百货</strong>,可以集中刷退税。重物在店内打包国际快递,不用拎上飞机。"
+      },
+      sections: [
+        {
+          title: "瓷器 / 家居 · Royal Copenhagen 必去",
+          items: [
+            "<strong>Royal Copenhagen</strong> @ Amagertorv 6 — 镇店之宝 Blue Fluted 蓝纹手绘系列(平边 / 全蕾丝 / 半蕾丝三档),Mega 大蓝纹是当代款",
+            "<strong>Georg Jensen</strong> — 丹麦银器之王,Daisy 雏菊系列、Vivianna 手镯表是经典",
+            "<strong>Bang & Olufsen</strong> 音响 — 比国内便宜不少 + 25% 退税",
+            "<strong>Stelton</strong> 不锈钢家居 — Arne Jacobsen 设计的 Cylinda-Line 水壶咖啡壶",
+            "<strong>HAY</strong> 北欧极简家居 @ Østergade 61 — 小件好带(灯、文具、托盘)"
+          ]
+        },
+        {
+          title: "丹麦时装",
+          items: [
+            "<strong>Ganni</strong> — 轻奢女装,丹麦本土明星品牌",
+            "<strong>Samsøe Samsøe</strong>、<strong>Norse Projects</strong>(男装)",
+            "<strong>Wood Wood</strong> — 街头风",
+            "童装 <strong>Mini A Ture</strong>、<strong>Wheat</strong>"
+          ]
+        },
+        {
+          title: "食品 · 机场前最后买,避免一路扛着",
+          items: [
+            "<strong>Anthon Berg</strong> 巧克力 — 国民品牌,marzipan 杏仁糖、利口酒夹心",
+            "<strong>Lakrids by Bülow</strong> — 高端甘草糖,黑色圆球巧克力包甘草,口味很丹麦",
+            "<strong>Skagen 海盐</strong>、<strong>丹麦黄油曲奇 Kjeldsens</strong>",
+            "<strong>Aquavit / Akvavit</strong> 烧酒(Aalborg 牌最经典,带茴香香料)",
+            "<em>Torvehallerne 市场</em>顺路买:北欧风味盐、果酱、芥末"
+          ]
+        },
+        {
+          title: "护肤 · 留到机场免税店买",
+          items: [
+            "<strong>Ole Henriksen</strong>(丹麦人在 LA 创的,丹麦超市便宜)",
+            "<strong>L:A Bruket</strong>、<strong>Mádara</strong> 也好找",
+            "<em>北欧化妆品在 CPH 机场免税店买最划算,比市区还便宜</em>"
+          ]
+        }
+      ],
+      tips: {
+        title: "退税实务 · 这天最重要",
+        body: "<p><strong>集中刷一家</strong>:Illum 百货退税柜台一站搞定,比小店一张张退表快得多。Global Blue 单店满 DKK 300 起退,实际拿到手 15–19%。</p><p><strong>盖章流程</strong>:拿到 tax-free 表 → D8 在 CPH 机场海关盖章 → Global Blue 柜台拿现金/退卡。预留 1 小时。瑞典买的也在 CPH 盖章——同一申根关税区。</p><p><strong>重物寄运</strong>:Royal Copenhagen 瓷器、玻璃这类重的脆的,Illum 店内可以直接打包国际快递,免得拎上飞机。</p>"
+      }
+    },
     eat: [
       { featured:true, name:"Restaurant Barr", tag:"今晚推荐",
         meta:"周五 17:00–23:30 · 人均 600–900 DKK · 4.3 星",
@@ -1550,7 +1861,9 @@ const TRIP = [
         address:"Hauser Pl. 16, 1127 København, Denmark" }
     ],
     timeline: [
-      { time:"08:30–11:30", label:"早餐 + Strøget 退税购物" },
+      { time:"08:30–11:30", label:"早餐 + Strøget 退税购物 · 主战场", major:true, shop:true,
+        note:"⭐ 全程最大块购物时段。从市政厅 Rådhuspladsen → Illum 百货 → Royal Copenhagen 旗舰店 → Kongens Nytorv,一条线扫完。Illum 集中刷退税最省事。",
+        address:"Strøget, 1160 København, Denmark" },
       { time:"11:30–12:00", label:"占位 · 阿美琳堡换岗",
         address:"Amalienborg Slotsplads, 1257 København, Denmark" },
       { time:"12:00–12:45", label:"皇家卫兵换岗 vagtparade", major:true,
@@ -1642,6 +1955,40 @@ const TRIP = [
       address: "Hammer Landstraße 170, 20537 Hamburg, Germany",
       note: "21:30 才到，先睡。明早出发前可以买个 Franzbrötchen（汉堡肉桂酥）路上吃。"
     },
+    shop: {
+      sub: "CPH 海关 + 免税店",
+      kicker: "送机日 · 退税 + 免税店补漏",
+      title: "<em>CPH</em> 退税 + 免税店",
+      window: {
+        kicker: "今日两个动作",
+        time: "14:30 退税 · 16:00 免税店",
+        where: "<strong>退税</strong>: B 组登机前 CPH 海关盖章 — 全程丹麦 + 瑞典买的 tax-free 表都在这里盖。<strong>免税店</strong>: A 组 16:00–17:00 在机场补北欧护肤。"
+      },
+      sections: [
+        {
+          title: "退税清单 · 出关前对一遍",
+          items: [
+            "Royal Copenhagen / Georg Jensen / B&O 等大件的 tax-free 表",
+            "瑞典 NK 百货 / 哥德堡 Nordstan 的 Global Blue 表",
+            "<strong>Illum / NK 集中刷的退税表</strong> — 一家百货一张表,数张就行",
+            "<em>护照 + 登机牌 + 未拆封商品备查</em>(海关偶尔抽检)"
+          ]
+        },
+        {
+          title: "CPH 免税店补漏(A 组 16:00–17:00)",
+          items: [
+            "<strong>Ole Henriksen</strong> — 丹麦人在 LA 创的,丹麦机场比市区还便宜",
+            "<strong>L:A Bruket</strong>、<strong>Mádara</strong> — 北欧护肤",
+            "<strong>Anthon Berg / Lakrids by Bülow</strong> — 丹麦巧克力 / 甘草糖,补货",
+            "<strong>Aquavit</strong> 烧酒 — 免税店买更便宜"
+          ]
+        }
+      ],
+      tips: {
+        title: "退税流程",
+        body: "<p><strong>预留 1 小时</strong>。流程:Global Blue / Planet 自助机或人工柜台 → 海关盖章 → 拿现金或退到卡。出关前完成,过了安检就晚了。</p><p>瑞典买的东西也在 CPH 盖章 — 丹麦瑞典同一申根关税区,不用回瑞典办。退税率实际拿到手 15–19%(25% 增值税扣手续费)。</p>"
+      }
+    },
     eat: [
       { featured:true, name:"Hillerød 老城午餐", tag:"D8 中",
         meta:"Frederiksborg 城堡附近",
@@ -1662,11 +2009,11 @@ const TRIP = [
         address:"Slotsgade, 3400 Hillerød, Denmark" },
       { time:"13:30–14:30", label:"Hillerød → CPH 机场 55 km / 50 分钟",
         address:"Copenhagen Airport, 2770 Kastrup, Denmark" },
-      { time:"14:30–16:00", label:"B 组办登机 + 退税；A 组陪到机场", major:true,
-        note:"B 组 19:00 起飞。" },
+      { time:"14:30–16:00", label:"B 组办登机 + 海关盖章退税；A 组陪到机场", major:true, shop:true,
+        note:"B 组 19:00 起飞。⚠️ 退税最后机会:全程在丹麦+瑞典买的 tax-free 表都在 CPH 海关盖章(同申根关税区)。Global Blue 柜台拿现金/退卡,预留 1 小时。" },
       { time:"16:00", label:"B 组进安检；A 组离开 CPH" },
-      { time:"16:00–17:00", label:"A 组免税店 / 午茶休息",
-        note:"确认 B 组安全后再走。" },
+      { time:"16:00–17:00", label:"A 组 CPH 免税店补漏", shop:true,
+        note:"确认 B 组安全后再走。⭐ 北欧护肤(Ole Henriksen / L:A Bruket / Mádara)在 CPH 免税店比市区还便宜——市区没下手的留这里。" },
       { time:"17:00–18:00", label:"跨大带桥 Storebælt", major:true,
         note:"260 DKK 再付一次。" },
       { time:"18:00–21:30", label:"大带桥 → Padborg → Hamburg 3.5 h",
@@ -2142,6 +2489,12 @@ function renderDay(){
           <span class="lbl">Stay tonight</span>
           <span class="sub">${esc(day.stay.name)}</span>
         </button>
+        ${day.shop ? `
+        <button class="foot-btn shop-btn" data-modal="shop">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="lbl">Shopping</span>
+          <span class="sub">${esc(day.shop.sub || '')}</span>
+        </button>` : ''}
         <button class="foot-btn" data-modal="eat">
           <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2v8a3 3 0 0 0 6 0V2"/><line x1="10" y1="10" x2="10" y2="22"/><path d="M17 2c-1.5 1.5-2 4-2 6 0 2 1 4 2 4v10"/></svg>
           <span class="lbl">Where to eat</span>
@@ -2185,19 +2538,22 @@ function renderDay(){
 }
 
 function renderTLItem(it){
-  const major = it.major ? 'major' : '';
+  const classes = [];
+  if (it.major) classes.push('major');
+  if (it.shop) classes.push('shop');
+  const cls = classes.join(' ');
   const timeParts = it.time.split(/[–\-]/);
   const startTime = timeParts[0].trim();
   const endTime = timeParts[1] ? timeParts[1].trim() : '';
   return `
-    <div class="tl-item ${major}" data-time="${esc(startTime)}">
+    <div class="tl-item ${cls}" data-time="${esc(startTime)}">
       <div class="tl-time">
         ${esc(startTime)}
         ${endTime ? `<small>→ ${esc(endTime)}</small>` : ''}
       </div>
       <div class="tl-dot"></div>
       <div class="tl-content">
-        <div class="tl-text"><strong>${esc(it.label)}</strong></div>
+        <div class="tl-text">${it.shop ? '<span class="shop-tag">Shop</span>' : ''}<strong>${esc(it.label)}</strong></div>
         ${it.note ? `<div class="tl-note">${esc(it.note)}</div>` : ''}
         ${it.address ? `
           <button class="tl-addr" data-addr="${esc(it.address)}">
@@ -2276,6 +2632,32 @@ function renderModal(){
         </button>` : ''}
       </div>
     `).join('');
+  } else if (state.modal === 'shop'){
+    const s = day.shop;
+    kicker = `Day ${day.id} · ${s.kicker || '今日购物窗口'}`;
+    title = s.title || '<em>Shopping</em>';
+    const windowHtml = s.window ? `
+      <div class="shop-window">
+        <div class="sw-kicker">${esc(s.window.kicker || '今日购物时段')}</div>
+        <div class="sw-time">${esc(s.window.time)}</div>
+        <div class="sw-where">${s.window.where}</div>
+      </div>
+    ` : '';
+    const sectionsHtml = (s.sections || []).map(sec => `
+      <div class="shop-section">
+        <h4>${esc(sec.title)}</h4>
+        <ul class="shop-list">
+          ${sec.items.map(it => `<li>${it}</li>`).join('')}
+        </ul>
+      </div>
+    `).join('');
+    const tipsHtml = s.tips ? `
+      <div class="shop-tips">
+        <h4>${esc(s.tips.title || '实务提醒')}</h4>
+        ${s.tips.body}
+      </div>
+    ` : '';
+    content = windowHtml + sectionsHtml + tipsHtml;
   }
 
   const bg = document.createElement('div');
