@@ -1,0 +1,2227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#1f3a5f" />
+<title>Nordic Mythology Roadtrip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue-900:#1b2a44;     /* dark nordic */
+    --blue-700:#2c476e;
+    --blue-500:#5a7da3;     /* morandi blue */
+    --blue-400:#8aa6c4;
+    --blue-200:#c7d4e2;
+    --blue-100:#e3ebf3;
+    --cream:#f4ecdb;
+    --cream-2:#ece2cb;
+    --paper:#f8f3e6;
+    --ink:#1b2a44;
+    --ink-soft:#3a4a64;
+    --red:#b13a3a;          /* now-line: muted nordic red */
+    --shadow: 0 1px 0 rgba(27,42,68,.06), 0 8px 24px rgba(27,42,68,.08);
+    --shadow-strong: 0 12px 40px rgba(27,42,68,.18);
+    --serif:'Fraunces', Georgia, serif;
+    --sans:'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+  html,body{margin:0; padding:0; height:100%; overflow:hidden; overscroll-behavior:none;}
+  body{
+    font-family: var(--sans);
+    color: var(--ink);
+    background: var(--paper);
+    /* subtle noise + radial gradient for Nordic atmosphere */
+    background-image:
+      radial-gradient(1200px 600px at 10% -10%, rgba(199,212,226,.55), transparent 60%),
+      radial-gradient(900px 500px at 110% 110%, rgba(244,236,219,.85), transparent 60%),
+      linear-gradient(180deg, #f6efde 0%, #efe7d2 100%);
+    font-feature-settings: "ss01","liga";
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #app{
+    height:100dvh;
+    width:100vw;
+    max-width:520px;
+    margin:0 auto;
+    position:relative;
+    display:flex; flex-direction:column;
+    background: linear-gradient(180deg, #f8f3e6 0%, #f0e8d2 100%);
+    box-shadow: 0 0 60px rgba(27,42,68,.08);
+    overflow:hidden;
+  }
+
+  /* ============ HOME (day picker) ============ */
+  .home{
+    flex:1; display:flex; flex-direction:column;
+    padding: max(env(safe-area-inset-top), 18px) 18px 16px;
+  }
+  .home-head{
+    padding: 14px 4px 18px;
+    border-bottom: 1px solid rgba(27,42,68,.08);
+    margin-bottom: 14px;
+  }
+  .kicker{
+    font-family: var(--sans);
+    font-size: 11px; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--blue-500);
+    margin-bottom: 8px;
+  }
+  .home-title{
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 30px; line-height: 1.05;
+    color: var(--blue-900);
+    letter-spacing: -.01em;
+    margin: 0 0 4px;
+  }
+  .home-title em{ font-style: italic; font-weight: 300; color: var(--blue-700);}
+  .home-sub{
+    font-size: 12.5px; color: var(--ink-soft);
+    margin-top: 6px; line-height:1.5;
+  }
+  .home-sub span{ color: var(--blue-700); font-weight:500;}
+
+  .grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    overflow-y:auto;
+    padding-bottom: max(env(safe-area-inset-bottom), 16px);
+    flex:1;
+    scrollbar-width: none;
+  }
+  .grid::-webkit-scrollbar{display:none;}
+
+  .day-card{
+    background: rgba(255,255,255,.55);
+    border: 1px solid rgba(90,125,163,.18);
+    border-radius: 14px;
+    padding: 14px 12px 12px;
+    text-align: left;
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .2s ease, background .2s;
+    position: relative;
+    min-height: 96px;
+    display:flex; flex-direction:column; justify-content:space-between;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .day-card:active{ transform: scale(.98); }
+  .day-card.today{
+    background: var(--blue-900);
+    border-color: var(--blue-900);
+    color: var(--cream);
+    box-shadow: var(--shadow-strong);
+  }
+  .day-card.today .dnum,
+  .day-card.today .dlabel,
+  .day-card.today .ddate{ color: var(--cream);}
+  .day-card.today .dlabel{ color: var(--blue-200);}
+  .day-card.today::after{
+    content:"今天 · today";
+    position:absolute; top:10px; right:10px;
+    font-size:9.5px; letter-spacing:.18em; text-transform:uppercase;
+    background: var(--cream); color: var(--blue-900);
+    padding: 3px 7px; border-radius: 99px; font-weight:600;
+  }
+  .dnum{
+    font-family: var(--serif);
+    font-size: 28px; font-weight: 400;
+    color: var(--blue-900);
+    letter-spacing:-.02em;
+    line-height:1;
+  }
+  .ddate{
+    font-family: var(--sans);
+    font-size: 11px; color: var(--blue-500);
+    letter-spacing:.05em;
+    margin-top: 4px;
+  }
+  .dlabel{
+    font-size: 11.5px; color: var(--ink-soft);
+    line-height: 1.35;
+    margin-top: 8px;
+    font-weight:400;
+    /* clamp to 2 lines */
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+  }
+
+  /* ============ DAY VIEW ============ */
+  .day-view{
+    flex:1;
+    display:flex; flex-direction:column;
+    position:relative;
+  }
+
+  /* HEADER ~1/5 */
+  .day-header{
+    padding: max(env(safe-area-inset-top), 14px) 18px 12px;
+    background: linear-gradient(180deg, var(--blue-900) 0%, var(--blue-700) 100%);
+    color: var(--cream);
+    position:relative;
+    flex: 0 0 auto;
+    box-shadow: 0 4px 20px rgba(27,42,68,.18);
+    z-index:5;
+  }
+  .back-row{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom: 6px;
+  }
+  .back-btn{
+    background:none; border:none; color: var(--cream);
+    font-family: var(--sans); font-size: 13px;
+    display:inline-flex; align-items:center; gap:6px;
+    padding: 4px 0; cursor:pointer;
+    opacity:.85;
+  }
+  .back-btn:active{opacity:.6;}
+  .day-pill{
+    font-size: 10.5px; letter-spacing:.18em; text-transform: uppercase;
+    color: var(--blue-200); font-weight:500;
+  }
+  .day-title{
+    font-family: var(--serif);
+    font-size: 19px; font-weight: 400;
+    margin: 2px 0 10px;
+    line-height: 1.15;
+    color: var(--cream);
+    letter-spacing:-.005em;
+  }
+  .day-title em{ font-style: italic; color: var(--blue-200); font-weight:300;}
+
+  .tabs{
+    display:flex; gap: 6px;
+  }
+  .tab{
+    flex:1;
+    background: rgba(244,236,219,.1);
+    border: 1px solid rgba(244,236,219,.18);
+    color: var(--cream);
+    padding: 9px 6px;
+    font-family: var(--sans);
+    font-size: 11.5px; font-weight: 500;
+    letter-spacing: .04em;
+    border-radius: 10px;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:6px;
+    transition: background .15s;
+  }
+  .tab svg{ width:13px; height:13px; opacity:.85;}
+  .tab:active{ background: rgba(244,236,219,.22);}
+
+  /* MAIN timeline area */
+  .day-main{
+    flex:1;
+    overflow-y:auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px 0 24px;
+    position:relative;
+    scrollbar-width: none;
+  }
+  .day-main::-webkit-scrollbar{display:none;}
+
+  /* Timeline */
+  .timeline{
+    position:relative;
+    padding: 4px 18px 8px 18px;
+  }
+  .tl-spine{
+    position:absolute;
+    left: 64px;
+    top: 8px; bottom: 8px;
+    width: 1.5px;
+    background: linear-gradient(180deg, transparent 0%, rgba(90,125,163,.35) 8%, rgba(90,125,163,.35) 92%, transparent 100%);
+  }
+  .now-line{
+    position:absolute;
+    left: 18px; right: 18px;
+    height: 0;
+    border-top: 1.5px dashed var(--red);
+    z-index: 4;
+    pointer-events:none;
+    transition: top .3s ease;
+  }
+  .now-line::before{
+    content:"";
+    position:absolute;
+    left: 46px; top: -5px;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 0 4px rgba(177,58,58,.18);
+  }
+  .now-line::after{
+    content: attr(data-label);
+    position:absolute;
+    right: 0; top: -18px;
+    font-size: 9.5px; letter-spacing:.16em; text-transform: uppercase;
+    color: var(--red); font-weight:600;
+    background: var(--paper);
+    padding: 2px 6px; border-radius: 4px;
+  }
+
+  .tl-item{
+    position:relative;
+    display:grid;
+    grid-template-columns: 48px 1fr;
+    gap: 16px;
+    padding: 8px 0 14px;
+    align-items: flex-start;
+  }
+  .tl-time{
+    font-family: var(--serif);
+    font-size: 12.5px;
+    color: var(--blue-700);
+    text-align: right;
+    padding-top: 2px;
+    font-feature-settings: "tnum";
+    line-height:1.2;
+    letter-spacing:-.01em;
+  }
+  .tl-time small{
+    display:block;
+    font-family: var(--sans);
+    font-size: 9.5px;
+    color: var(--blue-400);
+    margin-top: 2px;
+    letter-spacing:.04em;
+  }
+  .tl-dot{
+    position:absolute;
+    left: 62px; top: 10px;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--cream);
+    border: 1.5px solid var(--blue-500);
+    box-shadow: 0 0 0 3px var(--paper);
+    z-index: 2;
+  }
+  .tl-item.major .tl-dot{
+    background: var(--blue-900);
+    border-color: var(--blue-900);
+    width: 11px; height:11px;
+    left: 61px;
+  }
+  .tl-content{
+    background: rgba(255,255,255,.5);
+    border: 1px solid rgba(90,125,163,.16);
+    border-radius: 10px;
+    padding: 10px 12px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  .tl-item.major .tl-content{
+    background: rgba(255,255,255,.78);
+    border-color: rgba(90,125,163,.28);
+    box-shadow: var(--shadow);
+  }
+  .tl-text{
+    font-size: 13px; line-height: 1.5;
+    color: var(--ink);
+  }
+  .tl-text strong{ color: var(--blue-900); font-weight:600;}
+  .tl-note{
+    font-size: 11.5px; color: var(--ink-soft);
+    line-height: 1.45;
+    margin-top: 4px;
+  }
+  .tl-addr{
+    margin-top: 8px;
+    display:inline-flex; align-items:center; gap:6px;
+    background: var(--cream);
+    border: 1px dashed rgba(90,125,163,.4);
+    color: var(--blue-700);
+    font-size: 11px; line-height:1.35;
+    padding: 6px 9px;
+    border-radius: 7px;
+    cursor: pointer;
+    max-width:100%;
+    transition: background .15s, border-color .15s;
+    font-family: var(--sans);
+  }
+  .tl-addr:active{ background: var(--blue-100);}
+  .tl-addr.copied{
+    background: var(--blue-900); color: var(--cream);
+    border-color: var(--blue-900);
+  }
+  .tl-addr svg{ width:11px; height:11px; flex-shrink:0;}
+  .tl-addr .addr-text{
+    overflow:hidden; text-overflow: ellipsis;
+    white-space: nowrap;
+    flex:1; min-width:0;
+  }
+
+  /* FOOTER ~1/5 */
+  .day-footer{
+    flex: 0 0 auto;
+    padding: 12px 18px max(env(safe-area-inset-bottom), 14px);
+    background: linear-gradient(180deg, transparent 0%, var(--cream-2) 30%, var(--cream-2) 100%);
+    border-top: 1px solid rgba(90,125,163,.18);
+    display:flex; gap: 10px;
+  }
+  .foot-btn{
+    flex:1;
+    background: var(--cream);
+    border: 1px solid rgba(27,42,68,.15);
+    border-radius: 12px;
+    padding: 11px 10px;
+    cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+    transition: transform .12s, background .15s;
+    font-family: var(--sans);
+  }
+  .foot-btn:active{ transform: scale(.97); background: var(--blue-100);}
+  .foot-btn .ico{
+    width:20px; height:20px; color: var(--blue-700);
+  }
+  .foot-btn .lbl{
+    font-size: 11px; color: var(--blue-900); font-weight: 600;
+    letter-spacing:.04em;
+  }
+  .foot-btn .sub{
+    font-size: 9.5px; color: var(--ink-soft); letter-spacing:.04em;
+  }
+
+  /* ============ MODAL (Stories / Vocab / Stay / Eat) ============ */
+  .modal-bg{
+    position:absolute; inset:0;
+    background: rgba(27,42,68,.4);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 50;
+    display:flex; align-items: flex-end;
+    animation: fade-in .2s ease;
+  }
+  @keyframes fade-in{ from{opacity:0;} to{opacity:1;} }
+  @keyframes slide-up{ from{transform:translateY(8%); opacity:0;} to{transform:translateY(0); opacity:1;} }
+  .modal{
+    width:100%;
+    max-height: 86%;
+    background: var(--paper);
+    border-radius: 18px 18px 0 0;
+    padding: 14px 0 max(env(safe-area-inset-bottom), 16px);
+    box-shadow: 0 -20px 60px rgba(27,42,68,.25);
+    display:flex; flex-direction:column;
+    animation: slide-up .25s cubic-bezier(.2,.7,.2,1);
+    overflow:hidden;
+  }
+  .modal-handle{
+    width: 36px; height: 4px;
+    background: rgba(27,42,68,.2);
+    border-radius: 99px;
+    margin: 0 auto 10px;
+    flex-shrink:0;
+  }
+  .modal-head{
+    padding: 4px 20px 12px;
+    border-bottom: 1px solid rgba(90,125,163,.18);
+    display:flex; align-items: flex-start; justify-content: space-between;
+    flex-shrink:0;
+  }
+  .modal-title-wrap{flex:1; padding-right: 14px;}
+  .modal-kicker{
+    font-size: 10px; letter-spacing:.2em; text-transform:uppercase;
+    color: var(--blue-500); font-weight:600; margin-bottom: 4px;
+  }
+  .modal-title{
+    font-family: var(--serif);
+    font-size: 19px; font-weight: 400;
+    color: var(--blue-900);
+    line-height: 1.15;
+    margin:0;
+    letter-spacing:-.01em;
+  }
+  .modal-title em{ font-style:italic; color: var(--blue-700);}
+  .modal-close{
+    background: rgba(90,125,163,.15);
+    border:none;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    cursor:pointer;
+    color: var(--blue-900);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .modal-close:active{ background: rgba(90,125,163,.3);}
+  .modal-body{
+    overflow-y:auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px 20px 8px;
+    font-size: 13.5px; line-height: 1.62;
+    color: var(--ink);
+    scrollbar-width: none;
+  }
+  .modal-body::-webkit-scrollbar{display:none;}
+  .modal-body h3{
+    font-family: var(--serif);
+    font-size: 15.5px;
+    color: var(--blue-900);
+    margin: 18px 0 6px;
+    font-weight: 500;
+    letter-spacing:-.005em;
+  }
+  .modal-body h3:first-child{ margin-top: 0;}
+  .modal-body p{
+    margin: 0 0 10px;
+  }
+  .modal-body p.lede{
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--blue-700);
+    font-size: 14.5px;
+    line-height: 1.55;
+    padding: 0 0 4px;
+    border-bottom: 1px solid rgba(90,125,163,.18);
+    margin-bottom: 14px;
+  }
+  .modal-body strong{ color: var(--blue-900); font-weight: 600;}
+  .modal-body em.hl{
+    font-style: normal;
+    background: linear-gradient(180deg, transparent 60%, rgba(199,212,226,.7) 60%);
+    padding: 0 2px;
+  }
+  .modal-body ul{
+    padding-left: 18px;
+    margin: 4px 0 12px;
+  }
+  .modal-body li{
+    margin: 4px 0;
+    line-height: 1.55;
+  }
+
+  /* vocab list */
+  .vocab-list{
+    display:flex; flex-direction:column; gap: 8px;
+  }
+  .vocab-item{
+    background: rgba(255,255,255,.55);
+    border: 1px solid rgba(90,125,163,.16);
+    border-radius: 10px;
+    padding: 9px 12px;
+    display:flex; align-items: flex-start; justify-content: space-between;
+    gap: 12px;
+  }
+  .vocab-word{
+    font-family: var(--serif);
+    font-size: 15px;
+    color: var(--blue-900);
+    font-weight: 500;
+    letter-spacing:-.005em;
+  }
+  .vocab-word small{
+    font-family: var(--sans);
+    font-size: 10px;
+    color: var(--blue-500);
+    margin-left: 6px;
+    font-weight: 500;
+    letter-spacing:.04em;
+    text-transform: uppercase;
+  }
+  .vocab-meaning{
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    text-align: right;
+    line-height: 1.4;
+    flex-shrink:0;
+    max-width: 55%;
+  }
+
+  /* tips */
+  .tip{
+    background: rgba(199,212,226,.35);
+    border-left: 2px solid var(--blue-500);
+    padding: 9px 12px;
+    border-radius: 6px;
+    margin: 8px 0;
+    font-size: 12.5px;
+    color: var(--ink);
+    line-height: 1.55;
+  }
+  .tip strong{ color: var(--blue-900);}
+
+  /* stay / eat cards */
+  .place-card{
+    background: rgba(255,255,255,.6);
+    border: 1px solid rgba(90,125,163,.2);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }
+  .place-card.featured{
+    background: var(--blue-900);
+    color: var(--cream);
+    border-color: var(--blue-900);
+  }
+  .place-card.featured .pc-name{ color: var(--cream);}
+  .place-card.featured .pc-note{ color: var(--blue-200);}
+  .place-card.featured .pc-addr{
+    background: rgba(244,236,219,.12);
+    color: var(--cream);
+    border-color: rgba(244,236,219,.3);
+  }
+  .pc-row{
+    display:flex; align-items: baseline; justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+  .pc-name{
+    font-family: var(--serif);
+    font-size: 15.5px; font-weight: 500;
+    color: var(--blue-900);
+    line-height: 1.2;
+    letter-spacing:-.005em;
+  }
+  .pc-tag{
+    font-size: 9.5px; letter-spacing:.16em; text-transform:uppercase;
+    color: var(--blue-500); font-weight:600;
+    white-space:nowrap;
+  }
+  .place-card.featured .pc-tag{ color: var(--cream); opacity:.7;}
+  .pc-meta{
+    font-size: 11.5px;
+    color: var(--blue-500);
+    margin-bottom: 6px;
+    letter-spacing:.02em;
+  }
+  .place-card.featured .pc-meta{ color: var(--blue-200);}
+  .pc-note{
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+  .pc-addr{
+    display:inline-flex; align-items:center; gap:6px;
+    background: var(--cream);
+    border: 1px dashed rgba(90,125,163,.4);
+    color: var(--blue-700);
+    font-size: 11px;
+    padding: 5px 9px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: var(--sans);
+    max-width: 100%;
+  }
+  .pc-addr.copied{ background: var(--blue-700); color: var(--cream); border-color: var(--blue-700);}
+  .pc-addr svg{ width:11px; height:11px; flex-shrink:0;}
+  .pc-addr .at{
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+
+  /* Toast */
+  .toast{
+    position: absolute;
+    bottom: 110px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--blue-900);
+    color: var(--cream);
+    font-size: 12px;
+    padding: 8px 14px;
+    border-radius: 99px;
+    opacity: 0;
+    pointer-events:none;
+    transition: opacity .2s, transform .2s;
+    z-index: 100;
+    box-shadow: var(--shadow-strong);
+    letter-spacing:.04em;
+  }
+  .toast.show{ opacity:1; transform: translateX(-50%) translateY(0);}
+
+  /* tiny ornament */
+  .corner-mark{
+    position: absolute;
+    top: 16px; right: 18px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 11px;
+    color: rgba(90,125,163,.5);
+    letter-spacing: .04em;
+  }
+
+  /* hint at home */
+  .home-hint{
+    font-size: 10.5px;
+    color: var(--blue-500);
+    text-align:center;
+    padding: 10px 0 4px;
+    letter-spacing:.04em;
+  }
+
+  /* legend label inside timeline (when far from now-line) */
+  .tl-legend{
+    margin: 0 18px 8px;
+    font-size: 10px; letter-spacing:.18em; text-transform:uppercase;
+    color: var(--blue-500); font-weight:500;
+    display:flex; align-items:center; gap:8px;
+  }
+  .tl-legend .dash{
+    flex:1; height:0; border-top: 1px dashed rgba(90,125,163,.3);
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast" class="toast">已复制 · copied</div>
+
+<script>
+/* ============================================================
+   DATA — every day's timeline, stories, vocab, stay, eat
+   Drawn from Nordic_mythology_roadtrip v7.2
+============================================================ */
+
+const TRIP = [
+  /* ============ DAY 0 ============ */
+  {
+    id: 0,
+    date: "2026-07-03",
+    dateLabel: "7.3 周五",
+    dateShort: "Fri 3 Jul",
+    title: "苏黎世 → 哥廷根 → Seesen",
+    titleEn: "Zürich → Göttingen → Seesen",
+    label: "科学圣城哥廷根，Gauss 与 Hilbert 的墓",
+    drive: "670 km · 6 h 纯开 + 哥廷根 3 h",
+    stay: {
+      name: "Seesen 民宿",
+      meta: "哥廷根北 50 km · A7 边",
+      address: "Auf dem Plan 4, 38723 Seesen, Niedersachsen, Germany",
+      note: "长但有得玩的一天，今晚早休息，明早 06:30 出发为大带桥 + 接机预留时间。"
+    },
+    eat: [
+      { featured:true, name:"Wilhelmshöher Hof", tag:"今晚推荐",
+        meta:"Seesen 老城 · 人均 €15–25",
+        note:"传统德餐：Schnitzel、香肠拼盘、Harz 山区野味。Seesen 老城餐馆周五通常开到 22–23 点。",
+        address:"Wilhelmshöher Hof, Seesen, Germany" },
+      { name:"Restaurant am Theater", tag:"备选",
+        meta:"Seesen 老城",
+        note:"传统德式。",
+        address:"Restaurant am Theater, Seesen, Germany" }
+    ],
+    timeline: [
+      { time:"07:00", label:"苏黎世出发", note:"A1 → A5 → A7 北上。" },
+      { time:"07:00–10:30", label:"开车 3.5 h 到 Würzburg 附近", note:"长途段。" },
+      { time:"10:30–11:30", label:"Würzburg 服务区休息 + 午餐" },
+      { time:"11:30–14:00", label:"Würzburg → 哥廷根", note:"250 km / 2.5 h。" },
+      { time:"14:00", label:"抵哥廷根停车", major:true,
+        note:"Parkhaus Groner Tor 或 Parkhaus Jüdenstraße，约 €2/小时。",
+        address:"Parkhaus Groner Tor, Göttingen, Germany" },
+      { time:"14:15–14:45", label:"Albanifriedhof · Gauss 墓", major:true,
+        note:"老贵族公墓，朴素石碑。附近还有 Gmelin、Herbart、Otto Jahn、Lotze。",
+        address:"Albanifriedhof, Herzberger Landstr. 4, 37075 Göttingen, Germany" },
+      { time:"14:45–15:30", label:"Bartholomäusfriedhof · Dirichlet 墓", major:true,
+        note:"Dirichlet 与 Rebecka Mendelssohn 合葬；旁边是 Wilhelm Weber（韦伯）。",
+        address:"Bartholomäusfriedhof, Weender Landstraße 76, 37075 Göttingen, Germany" },
+      { time:"15:30–17:00", label:"Stadtfriedhof · Hilbert + 诺贝尔之环", major:true,
+        note:"入口 17 边形 Nobel-Rondell。Planck（h=6.62×10⁻³⁴）、Otto Hahn、Born、von Laue、Nernst。Hilbert 墓刻 Wir müssen wissen…",
+        address:"Stadtfriedhof, Kasseler Landstraße 1, 37081 Göttingen, Germany" },
+      { time:"17:00–17:45", label:"开车到 Seesen", note:"B27 → A7，约 50 km / 45 分钟。" },
+      { time:"17:45–18:30", label:"Seesen 入住" },
+      { time:"19:00", label:"晚餐 · Wilhelmshöher Hof", note:"Seesen 老城传统德餐。" }
+    ],
+    stories: {
+      kicker:"哥廷根 · The Mathematical Holy City",
+      title:"<em>Wir müssen wissen,</em><br>wir werden wissen.",
+      html: `
+        <p class="lede">哥廷根不是中世纪城——是科学圣城。1737 年汉诺威选帝侯（同时是英王 George II）建大学，培养官僚精英。但真正的传奇是 1880–1933 这 50 年：哥廷根是世界数学物理中心，地位相当于今天 MIT + 普林斯顿合一。</p>
+
+        <h3>Gauss — 数学王子（葬 Albanifriedhof）</h3>
+        <p>19 岁证明 <strong>正 17 边形可用尺规作图</strong>——2000 年来欧几里得几何的第一次大突破。Gauss 一生最得意此事，遗嘱要求墓上刻 17 边形，但石匠拒绝（理由：边数太多视觉跟圆没区别）。1881 年新开的 Stadtfriedhof 入口的<em class="hl">诺贝尔之环</em>就是 17 边形布局，算是迟到的致敬。</p>
+        <p>他一人开创了数论（《算术研究》）、最小二乘法、电报（1833 跟 Weber 从天文台拉电报线，比 Morse 早）、地球磁场测量。死后人们才发现他抽屉里压了 30 年的非欧几何手稿——他早就证完了。</p>
+
+        <h3>Dirichlet — Gauss 数学椅继承人</h3>
+        <p>法国胡格诺后裔。Gauss 死后接他在哥廷根的数学主教席——19 世纪欧洲数学第一把椅子。这把椅子三代传承：<strong>Gauss → Dirichlet → Riemann</strong>。1837 年用复分析证明等差数列素数定理，第一次把分析工具用到数论上，直接通向 Riemann 1859 年的黎曼猜想。</p>
+        <p>妻子 Rebecka Mendelssohn——作曲家 Felix Mendelssohn 的妹妹。两人合葬。</p>
+
+        <h3>Hilbert — “我们必须知道”</h3>
+        <p>1900 年巴黎数学家大会提出 <strong>23 个未解问题</strong>——定义了 20 世纪数学议程。墓上刻 <em class="hl">"Wir müssen wissen, wir werden wissen"</em>。</p>
+        <p>科学史最戏剧性的时空巧合：1930 年 9 月 8 日他在哥廷根电台发表这场演讲的同一天，<strong>哥德尔正在邻城柯尼斯堡的科学哲学会议上首次公开宣布不完备性定理</strong>——一个人在宣誓"全知"，另一个人在证明"人类永远无法全知"。Hilbert 不在乎，墓上还是这句。</p>
+
+        <h3>诺贝尔之环（17 边形）</h3>
+        <ul>
+          <li><strong>Max Planck</strong>：墓刻 h = 6.62 × 10⁻³⁴ W·s²——量子常数</li>
+          <li><strong>Otto Hahn</strong>：墓刻铀核分裂方程——1938 年圣诞节实验</li>
+          <li><strong>Max Born</strong>：量子力学概率诠释，1954 诺奖</li>
+          <li><strong>Max von Laue</strong>：X 射线衍射，1914 诺奖</li>
+          <li><strong>Walther Nernst</strong>：热力学第三定律</li>
+        </ul>
+
+        <h3>1933 年的灾难</h3>
+        <p>纳粹"非雅利安人法"一夜之间清空哥廷根：Born、Courant、Noether、Franck、Hertz、von Neumann……全走了。多数去了普林斯顿（爱因斯坦也是其中之一）——哥廷根学派物理上死在 1933。</p>
+        <p>Hilbert 留下来。几年后纳粹文化部长问他"现在哥廷根的数学还行吗？"，老人回答：<em class="hl">"Mathematik in Göttingen? Das gibt es doch gar nicht mehr."</em>（哥廷根数学？那东西早就不存在了。）</p>
+      `
+    },
+    vocab: {
+      tips: [
+        "出发前在 Seesen 出口 Aral / Shell 加满，明天 D1 跨境前必加满。",
+        "明早 06:30 出发——为大带桥 + 接机预留时间。",
+        "瑞士车 vignette 已有，今天经过德国不需要额外。"
+      ],
+      words: [
+        { w:"Friedhof", lang:"德", meaning:"公墓" },
+        { w:"Stadtfriedhof", lang:"德", meaning:"市公墓" },
+        { w:"Rondell", lang:"德", meaning:"圆环、回廊" },
+        { w:"Mathematik", lang:"德", meaning:"数学" },
+        { w:"Kirche", lang:"德", meaning:"教堂" },
+        { w:"Parkhaus", lang:"德", meaning:"停车楼" },
+        { w:"Ausfahrt", lang:"德", meaning:"出口（高速）" },
+        { w:"Tankstelle", lang:"德", meaning:"加油站" },
+        { w:"Schnitzel", lang:"德", meaning:"炸肉排" },
+      ]
+    }
+  },
+
+  /* ============ DAY 1 ============ */
+  {
+    id: 1,
+    date: "2026-07-04",
+    dateLabel: "7.4 周六",
+    dateShort: "Sat 4 Jul",
+    title: "Seesen → 接机 → 哥本哈根游 → Farum",
+    titleEn: "Seesen → CPH airport → Copenhagen → Farum",
+    label: "双子城首都的诞生 · Strøget · Nyhavn",
+    drive: "Seesen → CPH 580 km / 6 h + 接机 + 市内 4 h + Farum 25 km",
+    stay: {
+      name: "Farum 民宿",
+      meta: "哥本哈根北郊 25 km · 跟 D7 同一处",
+      address: "Furesøvej 16, 3520 Farum, Denmark",
+      note: "丹麦白夜 22:30 才暗，夜路完全安全。注意丹麦酒驾标准 0.05‰——晚饭驾驶员不喝酒。"
+    },
+    eat: [
+      { featured:true, name:"Christianshavns Færgecafé", tag:"今晚推荐",
+        meta:"Nyhavn 步行 15 分钟过桥 · 人均 200–300 DKK · 4.5 星",
+        note:"港口边老渡轮上吃饭，30+ 种自家酿 snaps，咖喱鲱鱼 karrysild。周六 11:30–22:30。",
+        address:"Strandgade 50, 1401 København, Denmark" },
+      { name:"Aamanns 1921", tag:"米其林指南",
+        meta:"周六 11:30–17 + 18–22 · 人均 400–700 DKK",
+        note:"米其林指南推荐的现代 smørrebrød。",
+        address:"Niels Hemmingsens Gade 19-21, 1153 København, Denmark" },
+      { name:"Nyhavn 港口边露天座", tag:"快捷",
+        meta:"随便选一家",
+        note:"风景溢价但氛围满分。",
+        address:"Nyhavn, 1051 København, Denmark" }
+    ],
+    timeline: [
+      { time:"06:30", label:"Seesen 出发", major:true },
+      { time:"06:30–08:30", label:"经汉诺威 → 汉堡", note:"200 km / 2 h。" },
+      { time:"08:30–09:00", label:"汉堡北郊加油 + 早餐" },
+      { time:"09:00–10:30", label:"A7 北上到丹麦边境 Padborg", note:"150 km。" },
+      { time:"10:30–11:30", label:"Padborg / Kolding 附近午餐" },
+      { time:"11:30–12:30", label:"Kolding → Odense → 大带桥引桥", note:"130 km。" },
+      { time:"12:30–13:30", label:"跨大带桥 Storebælt", major:true,
+        note:"260 DKK，车牌识别走 Express。" },
+      { time:"13:30–14:00", label:"抵 CPH 机场停车", note:"路标 P-Hus 短停。",
+        address:"Copenhagen Airport, Lufthavnsboulevarden 6, 2770 Kastrup, Denmark" },
+      { time:"14:00–14:30", label:"接机 · B 组到达，会合", major:true },
+      { time:"14:30–15:00", label:"开进市中心停 Q-Park Kongens Nytorv",
+        note:"机场到市中心 15 km / 20 分钟，约 30 DKK/h。",
+        address:"Q-Park Kongens Nytorv, 1050 København, Denmark" },
+      { time:"15:00–15:15", label:"市政厅 + 安徒生雕像", major:true,
+        note:"Rådhus 1905 建，门楣金色雕像是 Absalon 主教——披着僧袍的军阀。",
+        address:"Rådhuspladsen 1, 1550 København, Denmark" },
+      { time:"15:15–16:00", label:"哥本哈根大学 + 圣母教堂 Vor Frue Kirke",
+        note:"Frue Plads 广场。教堂内部 Thorvaldsen 的基督像——全球教堂“标准模板”。",
+        address:"Vor Frue Kirke, Nørregade 8, 1165 København, Denmark" },
+      { time:"16:00–16:45", label:"Strøget 步行街散步 → Nyhavn",
+        note:"1962 开辟，世界第一条长步行街（1.1 km）。" },
+      { time:"16:45–18:30", label:"Nyhavn 新港", major:true,
+        note:"安徒生 18 号住过 1834；67 号住过 1845–64（写《丑小鸭》《卖火柴的小女孩》就在这）；20 号住过 1871–75。北岸彩房比南岸老一百年。",
+        address:"Nyhavn, 1051 København, Denmark" },
+      { time:"18:30–20:00", label:"晚餐 · Christianshavns Færgecafé", major:true,
+        note:"港口边老渡轮上，咖喱鲱鱼 + 30+ 种自家酿 snaps。",
+        address:"Strandgade 50, 1401 København, Denmark" },
+      { time:"20:00–20:30", label:"取车 → 开 Farum", note:"25 km / 30 分钟，白夜还亮。" },
+      { time:"20:30–21:00", label:"Farum 入住",
+        address:"Furesøvej 16, 3520 Farum, Denmark" }
+    ],
+    stories: {
+      kicker:"København · The Twin-City Capital",
+      title:"<em>Købmandshavn</em><br>商人的港口",
+      html: `
+        <p class="lede">今天看的都是 17–19 世纪丹麦的脸。维京和中世纪的丹麦明天 D2 在罗斯基勒看；今天看的是双子城首都的诞生。</p>
+
+        <h3>市政厅 Rådhus + 披着僧袍的军阀</h3>
+        <p>1905 建成，红砖+石灰岩，新文艺复兴风格。设计师 Martin Nyrop 学的是锡耶纳和威尼斯市政厅。门楣上方的金色雕像是 <strong>Absalon 主教</strong>——哥本哈根奠基人。</p>
+        <p>关键人设：他既是大主教也是 <em class="hl">"披着僧袍的军阀"</em>，1167 年用武力在 Slotsholmen 小岛建堡垒压制文德人海盗——那个堡垒就是哥本哈根的起点。"哥本哈根" <strong>Købmandshavn</strong> 字面意思是"商人的港口"。市政厅广场是丹麦的"零公里点"——所有公路距离从这测。</p>
+
+        <h3>安徒生 · 从 Odense 到 Nyhavn</h3>
+        <p>1805 出生 Odense（菲英岛 Funen，D1 路上经过），14 岁徒步走到哥本哈根追演员梦，没成功转写作。1835 出版第一本童话——Tinderbox、Princess and the Pea、Little Mermaid（D7 在 Kastellet 看）。</p>
+        <p>市政厅旁的雕像姿势是他看着 <strong>Tivoli</strong>——他给 Tivoli 创始人 Carstensen 写过推荐信。Tivoli 1843 开园，是迪士尼乐园的灵感来源（迪士尼 1951 来访过两次）。</p>
+
+        <h3>圣母教堂 + Thorvaldsen 的基督</h3>
+        <p>教堂前身 1209，1807 年英军炮击哥本哈根烧毁（拿破仑战争里英国怕丹麦海军被法国拿走，做了次先发制人轰炸）。现在的新古典主义建筑 1829 重建，C.F. Hansen 设计。</p>
+        <p>内部 Thorvaldsen 的基督和十二门徒大理石像（1839）——19 世纪丹麦黄金时代雕塑代表作。<em class="hl">这尊基督像是世界各地基督教堂复制最多的耶稣形象</em>，是全球教堂"标准模板"。</p>
+
+        <h3>Nyhavn 新港 · 妓院酒馆水手公寓</h3>
+        <p>1670–73 Christian V 挖的运河，让大船能从海直接开到 Kongens Nytorv 王宫广场卸货。彩色房子是船员妓院酒馆水手公寓——<strong>直到 1970 年代都是哥本哈根最破最危险的区</strong>。</p>
+        <p>安徒生三个门牌都有小铜牌：18 号住过 1834；67 号住过 1845–64（写《丑小鸭》《卖火柴的小女孩》就在这）；20 号住过 1871–75（去世前一年）。</p>
+
+        <h3>为什么哥本哈根是丹麦首都</h3>
+        <p>不是因为地理中心——是因为 <strong>厄勒海峡 Øresund</strong> 的控制权。这条海峡是波罗的海唯一出海口，丹麦从 1429 年开始收"海峡通行税"（Sundtold），直到 1857 年废除，<em class="hl">收了 428 年</em>。这笔钱建了哥本哈根。控制海峡的关键堡垒在 Helsingør（莎士比亚《哈姆雷特》的 Elsinore）。</p>
+      `
+    },
+    vocab: {
+      tips: [
+        "大带桥过桥券：D1 跨大带桥 260 DKK，自动车牌识别 + 绑卡（BroBizz / Number Plate Payment）最快——storebaelt.dk 提前注册。",
+        "今晚务必在 oresundsbron.com 网上买好明天 Øresundsbron 过桥券（10% 折扣，约 423 DKK）。",
+        "保险 Green Card：瑞士虽非欧盟但参加 Green Card 系统，丹麦+瑞典默认覆盖。",
+        "Q-Park Kongens Nytorv：哥本哈根市中心最方便的地下停车场，4.5 小时约 135 DKK。",
+        "丹麦酒驾标准 0.05‰，跟瑞士一样严——晚饭时驾驶员不喝酒。"
+      ],
+      words: [
+        { w:"havn", lang:"丹", meaning:"港口" },
+        { w:"kirke", lang:"丹", meaning:"教堂" },
+        { w:"rådhus", lang:"丹", meaning:"市政厅" },
+        { w:"gade", lang:"丹", meaning:"街道" },
+        { w:"plads", lang:"丹", meaning:"广场" },
+        { w:"smørrebrød", lang:"丹", meaning:"开放式三明治" },
+        { w:"snaps", lang:"丹", meaning:"丹麦烈酒" },
+        { w:"karrysild", lang:"丹", meaning:"咖喱鲱鱼" },
+        { w:"tak", lang:"丹", meaning:"谢谢" },
+        { w:"skål", lang:"丹/瑞", meaning:"干杯" },
+        { w:"Storebælt", lang:"丹", meaning:"大带海峡" },
+        { w:"Øresund", lang:"丹", meaning:"厄勒海峡" }
+      ]
+    }
+  },
+
+  /* ============ DAY 2 ============ */
+  {
+    id: 2,
+    date: "2026-07-05",
+    dateLabel: "7.5 周日",
+    dateShort: "Sun 5 Jul",
+    title: "Farum → Roskilde → Lund → Gränna → Mjölby",
+    titleEn: "Roskilde → Lund → Gränna → Mjölby",
+    label: "维京船 · 隆德 Finn 巨人柱 · 维特恩湖红点鲑",
+    drive: "总纯开 6.5 h · 3 景点 + Gränna 湖景晚餐",
+    stay: {
+      name: "Mjölby 民宿",
+      meta: "格兰纳北 40 km · E4 边",
+      address: "Gullstigen Hättorp 2, 595 93 Mjölby, Sweden",
+      note: "白夜 22:30 才暗。08:30 必须出发——全程最满的一天。"
+    },
+    eat: [
+      { featured:true, name:"Grenna Hamnkrog", tag:"今晚推荐",
+        meta:"Gränna 港口北 · 夏季 11:30–22:00 · 人均 350–500 SEK · 4.0 星",
+        note:"湖景餐厅。Vätternröding（维特恩湖红点鲑）——只产于这一带几个深湖，地理学独家菜。",
+        address:"Hamnvägen, Gränna, Sweden" },
+      { name:"Café Knarr · 罗斯基勒午餐", tag:"D2 中午",
+        meta:"每天 10:00–16:00 · 人均 150–250 DKK",
+        note:"维京船博物馆内，维京风格菜单。",
+        address:"Vindeboder 20, 4000 Roskilde, Denmark" },
+      { name:"Pir Kro", tag:"Gränna 备选",
+        meta:"港口同位置 · 人均 250–400 SEK",
+        note:"鱼 + pizza 多选。",
+        address:"Hamnvägen, Gränna, Sweden" }
+    ],
+    timeline: [
+      { time:"08:30", label:"Farum 出发", major:true },
+      { time:"09:20–09:30", label:"罗斯基勒停车", note:"Vikingeskibsmuseet 自有免费停车场。" },
+      { time:"09:30–12:30", label:"维京船博物馆", major:true,
+        note:"10:00 开门，09:30 排队第一波。门票 160 DKK / 18 岁以下免费。5 艘 11 世纪长船：Skuldelev 2 是爱尔兰都柏林造的 30 米战舰——维京霸权的物质实锤。",
+        address:"Vindeboder 12, 4000 Roskilde, Denmark" },
+      { time:"12:00", label:"午餐 · Café Knarr",
+        note:"馆内，维京风格菜单。",
+        address:"Vindeboder 20, 4000 Roskilde, Denmark" },
+      { time:"12:30–12:45", label:"步行 15 分钟到 Cathedral" },
+      { time:"12:45–13:00", label:"在 Cathedral 门口等开门", note:"周日 13:00 才开——硬约束。" },
+      { time:"13:00–14:00", label:"罗斯基勒大教堂", major:true,
+        note:"门票 70 DKK。北欧第一座哥特式砖砌大教堂。40+ 位丹麦国王王后葬于此——从 Harald Bluetooth（蓝牙名字来源）到 Margrethe II 生前石棺。",
+        address:"Domkirkepladsen 3, 4000 Roskilde, Denmark" },
+      { time:"14:00–14:30", label:"取车，上 E20" },
+      { time:"14:30–15:00", label:"跨厄勒海峡大桥 Øresundsbron", major:true,
+        note:"提前网上买约 423 DKK，双向都收——D6 回程再付一次。" },
+      { time:"15:00–15:20", label:"过桥后 E6 出口 Lund S 下高速" },
+      { time:"15:20–15:35", label:"Lund 停车",
+        note:"Mårtenstorget 或 Sankt Lars stationsgaraget，约 25 SEK/h。",
+        address:"Mårtenstorget, 223 51 Lund, Sweden" },
+      { time:"15:35–17:00", label:"隆德大教堂", major:true,
+        note:"免费，周日 09:30–18:00。地下室 krypta 1123 祝圣、Finn 巨人石化柱、罗马式拱顶。天文钟周日 13:00+15:00 演奏——错过看静态。",
+        address:"Kyrkogatan 6, 222 22 Lund, Sweden" },
+      { time:"17:00–17:15", label:"取车，上 E4 北上" },
+      { time:"17:15–19:30", label:"E4 北上 2 h 15 min", note:"经 Markaryd / Värnamo → 瓦特恩湖区。" },
+      { time:"19:30–19:45", label:"E4 路边 · 巨人 Vist 木雕",
+        note:"Calle Örnemark 1971 年作，14 米高，公路边目所能及。",
+        address:"Riddersbergs Säteri, Huskvarna, Sweden" },
+      { time:"19:45–20:00", label:"Gränna 港口停车", note:"免费湖边停车场。",
+        address:"Gränna Hamn, Sweden" },
+      { time:"20:00–21:30", label:"Gränna 湖景晚餐 · Hamnkrog", major:true,
+        note:"Vätternröding 红点鲑——只产于维特恩湖这种深+低温的冰川湖。",
+        address:"Hamnvägen, Gränna, Sweden" },
+      { time:"20:00–20:30", label:"沿主街 Brahegatan 快速逛糖店看橱窗",
+        note:"polkagris 1859 年 Amalia Eriksson 发明——寡妇带女儿靠卖糖养家。Gränna Bolchekogeri 是发源地。",
+        address:"Brahegatan, Gränna, Sweden" },
+      { time:"21:30", label:"离开 Gränna，E4 北上 45 km 到 Mjölby" },
+      { time:"22:15", label:"抵 Mjölby 住宿",
+        address:"Gullstigen Hättorp 2, 595 93 Mjölby, Sweden" }
+    ],
+    stories: {
+      kicker:"维京 → 中世纪基督教北欧 → 巨人传说",
+      title:"<em>Tyst, tyst, son min</em><br>嘘嘘，我的孩子",
+      html: `
+        <p class="lede">今天一天串起完整的"维京 → 中世纪基督教北欧 → 北欧巨人传说"演化线。</p>
+
+        <h3>罗斯基勒 · 丹麦皇家陵墓</h3>
+        <p>罗斯基勒 980–1443 是丹麦首都（500 年）。"Roskilde" = "Hroar's spring"（罗阿尔之泉），命名自半神话维京国王 Hroar。</p>
+        <p><strong>维京船博物馆</strong>：1962 年峡湾出土 5 艘 11 世纪长船——是当年丹麦人故意凿沉来堵峡湾防瑞典/挪威/文德海盗的。Skuldelev 2 是 30 米长、60 名桨手的战舰，<em class="hl">爱尔兰都柏林造的（!）</em>——年轮检测确认，证明维京人不只是去过爱尔兰，是在那里建殖民地、造战舰、然后开回斯堪的纳维亚。</p>
+        <p><strong>大教堂</strong>：北欧第一座哥特式砖砌大教堂——丹麦没石头，发明用砖建哥特。1170s 由 Absalon 主教（哥本哈根创立者）开建，1280 完成。40+ 位国王王后葬于此——从 <strong>Harald Bluetooth</strong>（蓝牙名字来源：Ericsson 工程师制定标准时正巧在读讲维京长船的小说，意识到 Harald 当年"统一丹麦+挪威"正如蓝牙要统一通信协议）到 Margrethe II 生前石棺。</p>
+
+        <h3>隆德 · 北欧大主教座</h3>
+        <p>隆德 1103–1536 是斯堪的纳维亚的大主教座——管丹麦+挪威+瑞典+冰岛+格陵兰所有基督教。当时隆德是丹麦的（不是瑞典的！）——<strong>斯堪尼亚 Skåne 1658 才割给瑞典</strong>。1145 年祝圣，是北欧保留最完整的罗马式大教堂。</p>
+
+        <h3>Finn 巨人柱 — 巨人造大教堂的故事</h3>
+        <p>中世纪传说：圣徒 Lawrence（劳伦提乌斯）想建大教堂，但没钱没人。来了个巨人 Finn 说："我帮你建，但代价是猜我名字——猜不到你的眼睛归我，或者太阳月亮。"</p>
+        <p>Lawrence 走在隆德郊外山里，听到巨人的妻子哄孩子：<em class="hl">"Tyst, tyst, son min, i morgon kommer Finn, far din"</em>（嘘嘘小儿子，明天爸爸 Finn 就回来）。Lawrence 记下名字。大教堂落成那天 Lawrence 喊出 "Finn!"，巨人气疯了想推倒整座教堂，但石头落下来反而把他压在 krypta 的柱子上石化了。</p>
+        <p>柱子上现在还能摸到他的轮廓——抱着柱子的姿势。这条神话原型在 <strong>D9 Kassel 还会再出现一次</strong>（魔鬼桥传说）——古日耳曼"谁建大教堂/大桥？"的原始故事。</p>
+
+        <h3>Gränna · 巨人 Vist 与 polkagris</h3>
+        <p><strong>Visingsö 岛</strong>：巨人 Vist 想在维特恩湖中间建岛给妻子，从岸边抓了一把土往湖里扔，那块土就是 Visingsö 岛（湖中最大岛，14×3 km）。</p>
+        <p><strong>polkagris 红白条纹糖</strong>：1859 年 Amalia Eriksson 发明——<em class="hl">一个寡妇带女儿，靠卖糖养家</em>。配方：薄荷油 + 糖浆，手工拉成红白螺旋。瑞典国家级文化遗产食品。</p>
+        <p><strong>维特恩湖红点鲑 Vätternröding</strong>：维特恩湖是北极冰川湖（冰河时代北冰洋水残留），所以湖里有北极原生鱼种——红点鲑在斯堪的纳维亚南部只在这几个深湖里活。<em class="hl">这是地理学独家菜：你在 Stockholm 或 Göteborg 都吃不到正宗的。</em></p>
+      `
+    },
+    vocab: {
+      tips: [
+        "Roskilde Cathedral 周日 13:00 开门是硬约束——12:30–13:00 是排队 + 等开门窗口。",
+        "厄勒海峡桥：车牌识别通道最快。Øresundsbron 双向收费——D6 回程再付一次。",
+        "D2 拥堵费：周日全天免费。",
+        "polkagris demo（13:00 / 15:00 / 16:30）已错过，但 20:00–20:30 沿主街看橱窗能拿回大半体验。",
+        "19:30 前在 Jönköping 北郊加油 + 上厕所（油价比 Mjölby 低）。"
+      ],
+      words: [
+        { w:"domkyrka", lang:"瑞", meaning:"大教堂" },
+        { w:"krypta", lang:"瑞/丹", meaning:"地下墓室" },
+        { w:"vikingaskepp", lang:"瑞", meaning:"维京船" },
+        { w:"sjö", lang:"瑞", meaning:"湖" },
+        { w:"hamn", lang:"瑞", meaning:"港口" },
+        { w:"bro", lang:"瑞/丹", meaning:"桥" },
+        { w:"röding", lang:"瑞", meaning:"红点鲑" },
+        { w:"polkagris", lang:"瑞", meaning:"红白条纹糖" },
+        { w:"tyst", lang:"瑞", meaning:"嘘 / 安静" },
+        { w:"jätte", lang:"瑞", meaning:"巨人" },
+      ]
+    }
+  },
+
+  /* ============ DAY 3 ============ */
+  {
+    id: 3,
+    date: "2026-07-06",
+    dateLabel: "7.6 周一",
+    dateShort: "Mon 6 Jul",
+    title: "Mjölby → Rök → 老乌普萨拉 → Hässelby",
+    titleEn: "Mjölby → Rökstenen → Gamla Uppsala → Hässelby",
+    label: "世界最长卢恩石 · 北欧异教最后堡垒",
+    drive: "460 km · 4.5 h 纯开 + 两景点",
+    stay: {
+      name: "Hässelby-Vällingby 公寓",
+      meta: "斯德哥尔摩西北郊 13 km · 地铁绿线 Hässelby Strand",
+      address: "Loviselundsvägen 132, 165 70 Hässelby-Vällingby, Sweden",
+      note: "今晚 + 明晚连住。明天全程地铁不开车。"
+    },
+    eat: [
+      { featured:true, name:"Restaurant Tradition", tag:"今晚推荐",
+        meta:"Gamla stan · 周一 11:30–23:00 · 人均 350–500 SEK · 4.6 星",
+        note:"经典瑞典菜：toast Skagen + köttbullar + gravlax。地铁出来就是 Gamla stan，吃完直接走回地铁。",
+        address:"Österlånggatan 1, 111 31 Stockholm, Sweden" },
+      { name:"Odinsborg · D3 午餐", tag:"维京风",
+        meta:"老乌普萨拉 · 仅午餐，到 17:00 · 人均 200–400 SEK",
+        note:"mjöd 蜜酒（维京牛角杯端上来）+ 鲱鱼拼盘 + 烤肉。提前订位。",
+        address:"Ärnavägen 4, 754 40 Uppsala, Sweden" },
+      { name:"Kvarnen", tag:"备选",
+        meta:"Södermalm · 周一 11:00–23:00 · 人均 350–500 SEK",
+        note:"传统瑞典酒馆。",
+        address:"Tjärhovsgatan 4, 116 21 Stockholm, Sweden" }
+    ],
+    timeline: [
+      { time:"08:30", label:"Mjölby 出发", major:true },
+      { time:"08:30–09:00", label:"罗克卢恩石 Rökstenen", major:true,
+        note:"Rök 村教堂旁，免费。世界最长卢恩石——760 个符文分布五面，约 800 AD 刻。",
+        address:"Röks kyrka, 599 91 Ödeshög, Sweden" },
+      { time:"09:45–12:30", label:"上 E4 北上 2.75 h", note:"Norrköping 或 Södertälje 加油。" },
+      { time:"12:30–13:00", label:"开过斯德哥尔摩到老乌普萨拉" },
+      { time:"13:00–14:30", label:"Odinsborg 餐厅午餐", major:true,
+        note:"mjöd 蜜酒用维京牛角杯端上来——牛角不能直立放，所以'喝完才能放下'是青铜时代到维京时代的真实饮酒方式。",
+        address:"Ärnavägen 4, 754 40 Uppsala, Sweden" },
+      { time:"14:30–15:30", label:"王墓土丘 Kungshögarna", major:true,
+        note:"免费。三座 5–6 世纪建造的土丘，每座直径 60–70 米、高 9–10 米。民间传说埋着奥丁 Oden、托尔 Tor、弗雷 Frej。",
+        address:"Gamla Uppsala, 754 40 Uppsala, Sweden" },
+      { time:"15:30–16:00", label:"老教堂 Gamla Uppsala kyrka",
+        note:"1100s 建在原异教神庙位置上。墙体嵌着卢恩石作为建材——基督教消化异教的具象化。",
+        address:"Kyrkvägen 21, 754 40 Uppsala, Sweden" },
+      { time:"16:00–17:00", label:"Gamla Uppsala Museum",
+        note:"夏季每天 11:00–17:00，门票 150 SEK。下载 AR app Gamlis AR。",
+        address:"Disavägen 15, 754 40 Uppsala, Sweden" },
+      { time:"17:00–18:00", label:"Gamla Uppsala → Hässelby",
+        note:"75 km，绕过市中心走 E18/Bergslagsvägen——拥堵费最多 0–22 SEK。" },
+      { time:"18:00–18:30", label:"入住 Hässelby",
+        address:"Loviselundsvägen 132, 165 70 Hässelby-Vällingby, Sweden" },
+      { time:"18:30–19:30", label:"坐地铁绿线进 T-Centralen / Gamla Stan",
+        note:"T10/T11 Hässelby Strand → 30 分钟，39 SEK。" },
+      { time:"19:30–21:30", label:"老城晚餐 · Tradition", major:true,
+        note:"白夜亮到 22:00 后。",
+        address:"Österlånggatan 1, 111 31 Stockholm, Sweden" }
+    ],
+    stories: {
+      kicker:"诸神黄昏的代际记忆",
+      title:"<em>Ragnarök</em><br>父亲为亡子刻的密码",
+      html: `
+        <p class="lede">9 世纪斯堪的纳维亚没有书面文学，所有古老知识靠口传 + 卢恩石。这一天的两块地方——Rök 石和 Gamla Uppsala 王墓——把整个北欧异教世界的精神浓缩在一个上午。</p>
+
+        <h3>Rökstenen · 世界最长卢恩石</h3>
+        <p>约 800 AD 刻，760 个符文分布五面（前、后、左、右、顶）。立在 Östergötland 的 Rök 村教堂旁，<strong>从来没移动过</strong>。是父亲 Varinn 为亡子 Vämod 立的石头。开头：<em class="hl">"Aft Vamod standa runaR þaR."</em>（这些符文为 Vamod 而立。）</p>
+        <p>但接下来 760 个符文不是悼词——是密码。混用三种符文体系（older futhark、younger futhark、转码字母）、五种密语技术。整个 11 世纪以前没人破解，现代符文学家也吵了 100 年。</p>
+        <p><strong>最新解读（Holmberg 2020）</strong>：整篇讲的是 <em class="hl">气候灾难和诸神黄昏 Ragnarök</em>——536 AD"无夏年"导致斯堪的纳维亚饥荒人口减半。维京时代刚开始时（300 年后），这场记忆还在民间流传。铭文通过谜语暗示末日严冬 Fimbulwinter。全文是 9 段谜语，每段问一个问题："谁征服了 12 战场？""谁是 9 个孩子的父亲？"——<strong>可能是父亲考儿子学问，悼念没机会让他长大学这些。所以这块石头既是父爱、也是气候创伤的代际记忆。</strong></p>
+
+        <h3>Gamla Uppsala · 北欧异教的最后堡垒</h3>
+        <p>5–11 世纪是斯堪的纳维亚的耶路撒冷——所有维京国王、酋长、自由民每 9 年聚集到这献祭。11 世纪基督教化后教堂建在原异教神庙位置上（对脚踩异教的标准操作）。</p>
+        <p><strong>三座王墓土丘</strong>：5–6 世纪建。传说埋着 Aun、Egil、Adils 三位国王（Aun 贪生怕死，传说献祭 9 个儿子换长寿，最后变婴儿要被乳娘喂奶才死）。但考古碳测年都比传说的国王早一两个世纪——所以真正埋的是更早期王朝，传说后来被附会。北欧民间传说改造版：埋着 <strong>奥丁 Oden、托尔 Tor、弗雷 Frej</strong>——主神三位一体。</p>
+
+        <h3>血腥祭典 Blot（亚当 c.1075 记载）</h3>
+        <p>每 9 年春分日举行大祭。所有维京自由民必须出席，基督徒也要——基督徒不去要罚金。献祭 9 种雄性动物，每种 9 只——马、狗、公鸡为主，<em class="hl">包括 9 个男人</em>。尸体挂在神庙旁的圣林 hörgr 树上腐烂——亚当记载"那景象惨不忍睹"。</p>
+        <p>这一切到 1080s 才终止——瑞典国王 Inge the Elder 拒绝主持血祭，被异教派赶下台。他弟弟"献祭者 Blot-Sven"上位继续祭，后来 Inge 武力夺回王位，烧掉神庙，建了今天 Gamla Uppsala 教堂的前身。</p>
+
+        <h3>Odinsborg · 诗之蜜酒</h3>
+        <p>餐厅 1908 开业。<strong>Odinsborg = 奥丁的城堡</strong>。mjöd / mead 蜜酒：北欧最古老酒精饮料。北欧神话里 <em class="hl">诗之蜜酒 Skáldskaparmjöðr</em>——奥丁化身蛇钻进山里偷出来，喝了就能作诗。</p>
+        <p><strong>用牛角杯端上来</strong>——这是青铜时代到维京时代的真实饮酒方式。<em class="hl">牛角不能直立放，所以"喝完才能放下"——一杯都喝完文化的起源，整个北欧豪放酒文化的根。</em></p>
+      `
+    },
+    vocab: {
+      tips: [
+        "Odinsborg 夏季周一开 ✅。提前订位。",
+        "D3 拥堵费：绕过市中心走 E18 / Bergslagsvägen，最多 0–22 SEK。",
+        "下载 AR app Gamlis AR——在王墓土丘现场看复原。",
+        "Hässelby 是地铁绿线 Hässelby Strand 终点 → T-Centralen 30 分钟。"
+      ],
+      words: [
+        { w:"runsten", lang:"瑞", meaning:"卢恩石" },
+        { w:"hög / kungshög", lang:"瑞", meaning:"土丘 / 王墓" },
+        { w:"kyrka", lang:"瑞", meaning:"教堂" },
+        { w:"blot", lang:"古北欧", meaning:"维京祭典" },
+        { w:"mjöd", lang:"瑞", meaning:"蜜酒 mead" },
+        { w:"Ragnarök", lang:"古北欧", meaning:"诸神黄昏" },
+        { w:"Yggdrasil", lang:"古北欧", meaning:"世界树" },
+        { w:"Óðinn / Oden", lang:"古北欧", meaning:"奥丁" },
+        { w:"Þórr / Tor", lang:"古北欧", meaning:"托尔" },
+        { w:"trängselskatt", lang:"瑞", meaning:"拥堵费" }
+      ]
+    }
+  },
+
+  /* ============ DAY 4 ============ */
+  {
+    id: 4,
+    date: "2026-07-07",
+    dateLabel: "7.7 周二",
+    dateShort: "Tue 7 Jul",
+    title: "斯德哥尔摩深度（全程地铁）",
+    titleEn: "Stockholm · all-day metro",
+    label: "皇宫 · 维京世界 · 最美地铁站艺术画廊",
+    drive: "0 自驾 · 地铁绿线 Hässelby → T-Centralen 30 分钟",
+    stay: {
+      name: "Hässelby-Vällingby 公寓（同 D3）",
+      meta: "斯德哥尔摩西北郊 13 km · 地铁绿线 Hässelby Strand",
+      address: "Loviselundsvägen 132, 165 70 Hässelby-Vällingby, Sweden",
+      note: "连住第二晚。明天 08:30 出发哥德堡。"
+    },
+    eat: [
+      { featured:true, name:"Pelikan (1733)", tag:"今晚推荐",
+        meta:"Södermalm · 周二 11:30–01:00 · 人均 350–500 SEK",
+        note:"1733 开业——比美国独立战争还早 43 年。Art Nouveau 内饰是 1904 重装。招牌 köttbullar——Gustav III 1771 年从奥斯曼帝国带回来的（!）。",
+        address:"Blekingegatan 40, 116 62 Stockholm, Sweden" },
+      { name:"Kvarnen", tag:"备选",
+        meta:"Södermalm · 周二 11:00–00:00 · 人均 350–500 SEK",
+        note:"传统瑞典酒馆。",
+        address:"Tjärhovsgatan 4, 116 21 Stockholm, Sweden" }
+    ],
+    timeline: [
+      { time:"08:30", label:"Hässelby 地铁出门", note:"绿线 T10/T11 → T-Centralen / Gamla stan，30 分钟。" },
+      { time:"09:30–11:00", label:"瑞典皇宫 Kungliga slottet", major:true,
+        note:"10:00 开门。门票 220 SEK 4 合 1：国家公寓 + 军械库 + 三王冠博物馆 + Gustav III 古董博物馆。",
+        address:"Kungliga slottet, 107 70 Stockholm, Sweden" },
+      { time:"11:00–11:45", label:"皇后大街 Drottningatan 步行",
+        note:"17 世纪规划，1989 改步行。",
+        address:"Drottninggatan, Stockholm, Sweden" },
+      { time:"11:45–12:15", label:"占位 · 卫兵换岗" },
+      { time:"12:15–13:00", label:"卫兵换岗 Vaktparad", major:true,
+        note:"12:15 准时，含军乐队。1523 年 Gustav Vasa 复国时设立，世界上不间断服役最久的卫队之一。" },
+      { time:"13:00–14:00", label:"老城午餐",
+        note:"或试 Tradition 中午开。" },
+      { time:"14:00–17:00", label:"历史博物馆 Historiska museet", major:true,
+        note:"周一闭馆，周二开 ✓。门票 180 SEK。'维京世界'常设展：世界树 Yggdrasil 装置、Galdrabók 冰岛魔法书、2500 件 8–11 世纪原物、Hemse 木板教堂 VR。",
+        address:"Narvavägen 13-17, 114 84 Stockholm, Sweden" },
+      { time:"17:00–17:30", label:"步行/地铁到 Stadshuset", address:"Hantverkargatan 1, 111 52 Stockholm, Sweden" },
+      { time:"17:30–18:30", label:"市政厅外观 + 钟楼",
+        note:"诺贝尔晚宴在蓝厅 Blå hallen（其实不是蓝的）+ 金厅 Gyllene salen 1800 万块马赛克金箔。",
+        address:"Hantverkargatan 1, 111 52 Stockholm, Sweden" },
+      { time:"18:30–19:30", label:"最美地铁站打卡", major:true,
+        note:"T-Centralen（蓝白叶子）→ Stadion（彩虹）→ Rådhuset（红色洞穴）→ Solna Centrum（绿森林+红天空）。" },
+      { time:"19:30–20:30", label:"Södermalm 晚餐 · Pelikan",
+        address:"Blekingegatan 40, 116 62 Stockholm, Sweden" },
+      { time:"20:30", label:"地铁回 Hässelby" }
+    ],
+    stories: {
+      kicker:"Stockholm · 大众艺术权的政治宣示",
+      title:"<em>stock + holm</em><br>木桩与小岛",
+      html: `
+        <p class="lede">为什么斯德哥尔摩 1252 才出现？Gamla Uppsala 衰落后，瑞典需要个新首都。1252 年 Birger Jarl 摄政在梅拉伦湖出海口建堡垒——这就是 Gamla stan 老城所在的小岛。</p>
+        <p>"Stockholm" = "stock"（木桩）+ "holm"（小岛）——传说是把镶金的木桩扔进湖里，浮到哪儿就建到哪儿。战略意义：控制梅拉伦湖（瑞典中部经济中心）出海口。</p>
+
+        <h3>瑞典皇宫 · 火与金的重生</h3>
+        <p>原址是 13 世纪 Tre Kronor 城堡（"三王冠"，象征 Kalmar 联盟的丹挪瑞）。<strong>1697 年大火毁了，当天新王 Karl XII 才 15 岁刚加冕</strong>——加冕仪式刚结束，城堡就烧了。1697–1754 重建——意大利建筑师 Nicodemus Tessin the Younger 设计，纯正的罗马巴洛克血统（Tessin 在罗马跟 Bernini 学过）。结果建出欧洲最大现役皇宫之一——608 间房。</p>
+        <p>四个博物馆门票合一：国家公寓、军械库（Gustavus Adolphus 1632 Lützen 战死时穿的血衣、Karl XII 死时戴的帽子）、三王冠博物馆（原 13 世纪堡垒地下室遗址）、Gustav III 古董博物馆（北欧第一个公共博物馆）。</p>
+
+        <h3>历史博物馆 · 维京世界</h3>
+        <p>"维京世界 The Viking World" 常设展是全瑞典最强：</p>
+        <ul>
+          <li><strong>世界树 Yggdrasil</strong> 中央装置（按 Völuspá 诗经描述的九界结构）</li>
+          <li><strong>Galdrabók 冰岛魔法书</strong>原件</li>
+          <li>2500 件 8–11 世纪原物：剑、雷神之锤 Mjölnir 项链、卢恩石、波斯/拜占庭/阿拉伯硬币（证明维京贸易东到巴格达）</li>
+          <li><strong>Hemse 木板教堂复原 VR</strong>：哥特兰岛 1100 年代木质教堂，原物烧毁，只剩 VR 能看</li>
+        </ul>
+
+        <h3>最美地铁站 · 大众艺术权</h3>
+        <p>斯德哥尔摩地铁 1950s 建——100 个站，<strong>90 个是公共艺术品</strong>，号称"世界最长艺术画廊"110 公里。蓝线特别震撼——直接在花岗岩里挖隧道，不抹墙，岩壁刷漆当画布。</p>
+        <p>背景不只是美学：1970s 经济危机+社会转型期，瑞典社民党政府用 <em class="hl">"地铁是属于人民的画廊"</em> 作为"大众艺术权"的政治宣示——艺术不是博物馆里的奢侈品，是每天上下班路上的公共财产。</p>
+
+        <h3>Pelikan + 瑞典肉丸</h3>
+        <p>Pelikan 1733 开业——比美国独立战争还早 43 年。Art Nouveau 内饰是 1904 重装，原木板墙+灯具保留。Södermalm 区——历史上斯德哥尔摩工人区，被作家 Strindberg 写进《红房间》（1879 现代瑞典文学开山作）。</p>
+        <p><strong>köttbullar 瑞典肉丸的真相</strong>：<em class="hl">Gustav III 1771 年从奥斯曼帝国带回来的（!）</em>。他叫驻土耳其大使 Mouradgea 学土耳其菜 kufte，回来本土化加 lingonberry 酱。</p>
+      `
+    },
+    vocab: {
+      tips: [
+        "Historiska 和 Vasa 二选一——主题契合度选 Historiska（维京世界常设展）。",
+        "卫兵换岗占位提前 20 分钟。",
+        "地铁单程 39 SEK，可以买 24h 票 175 SEK。",
+        "T-Centralen / Stadion / Rådhuset / Solna Centrum 是必打卡的地铁站。"
+      ],
+      words: [
+        { w:"slott", lang:"瑞", meaning:"城堡 / 宫殿" },
+        { w:"vaktparad", lang:"瑞", meaning:"卫兵换岗" },
+        { w:"köttbullar", lang:"瑞", meaning:"瑞典肉丸" },
+        { w:"lingonberry / lingon", lang:"瑞", meaning:"越橘酱" },
+        { w:"gamla stan", lang:"瑞", meaning:"老城" },
+        { w:"tunnelbana / T-bana", lang:"瑞", meaning:"地铁" },
+        { w:"fika", lang:"瑞", meaning:"咖啡时光" },
+        { w:"gravlax", lang:"瑞", meaning:"腌三文鱼" },
+        { w:"Yggdrasil", lang:"古北欧", meaning:"世界树" },
+        { w:"Mjölnir", lang:"古北欧", meaning:"雷神之锤" }
+      ]
+    }
+  },
+
+  /* ============ DAY 5 ============ */
+  {
+    id: 5,
+    date: "2026-07-08",
+    dateLabel: "7.8 周三",
+    dateShort: "Wed 8 Jul",
+    title: "Hässelby → Jönköping → 哥德堡 → Svenshögen",
+    titleEn: "Hässelby → Jönköping → Göteborg → Svenshögen",
+    label: "哥德堡 · Feskekôrka 鱼教堂 · 海鲜晚餐",
+    drive: "480 km · 5.5 h 纯开 + 哥德堡下午 3 h",
+    stay: {
+      name: "Svenshögen 民宿",
+      meta: "哥德堡北 60 km · Bohuslän 内陆青铜时代岩画区",
+      address: "Hälsovägen 40, 444 97 Svenshögen, Sweden",
+      note: "白夜还亮。早起可以散步看花岗岩裸岩——青铜时代岩画 hällristningar 原型。"
+    },
+    eat: [
+      { featured:true, name:"Feskekôrka 海鲜餐厅", tag:"今晚推荐",
+        meta:"哥德堡 · 周三 10:00–21:00 · 人均 350–600 SEK",
+        note:"'鱼教堂'建筑里的海鲜餐厅。1874 开业的鱼市——建筑师 von Gegerfelt 设计时玩讽刺：哥德堡人对海鲜的尊重就刻在尖顶里。",
+        address:"Fisktorget 4, 411 20 Göteborg, Sweden" },
+      { name:"Sjömagasinet", tag:"米其林一星",
+        meta:"周三 11:30–23:00 · 人均 800–1500 SEK",
+        note:"哥德堡米其林一星海鲜。",
+        address:"Adolf Edelsvärds Gata 5, 414 51 Göteborg, Sweden" }
+    ],
+    timeline: [
+      { time:"08:30", label:"Hässelby 出发", major:true },
+      { time:"08:30–12:00", label:"开 3.5 h 到 Jönköping", note:"中途 1 次加油。" },
+      { time:"12:00–13:30", label:"延雪平维特恩湖南岸吃午餐 + 看湖",
+        address:"Jönköping, Sweden" },
+      { time:"13:30–15:30", label:"继续开 2 h 到哥德堡市区" },
+      { time:"15:30–15:45", label:"哥德堡停车 Heden Q-Park 或 Lorensberg",
+        note:"约 30 SEK/h。",
+        address:"Heden Q-Park, Sten Sturegatan, 411 39 Göteborg, Sweden" },
+      { time:"15:45–16:30", label:"哥德堡大教堂 Domkyrka",
+        note:"外观 + 内部，免费。1815 新古典主义重建。内部 Carl Larsson 1880s 壁画——定义了'瑞典美学'的视觉模板。",
+        address:"Västra Hamngatan 17, 411 17 Göteborg, Sweden" },
+      { time:"16:30–18:00", label:"哥德堡老城 / 港口散步", major:true,
+        note:"Gustaf Adolfs torg + 市政厅 + 运河。哥德堡 1621 Gustavus Adolphus 创建，荷兰人做城市规划——运河+棋盘格跟阿姆斯特丹同模板。" },
+      { time:"18:00–19:30", label:"Feskekôrka 海鲜晚餐", major:true,
+        note:"鱼教堂建筑里。1874 开业。2020–24 翻修后重开，二楼是海鲜餐厅。",
+        address:"Fisktorget 4, 411 20 Göteborg, Sweden" },
+      { time:"19:30–20:15", label:"哥德堡 → Svenshögen 60 km / 45 分钟" },
+      { time:"20:15", label:"抵 Svenshögen 入住", major:true,
+        address:"Hälsovägen 40, 444 97 Svenshögen, Sweden" }
+    ],
+    stories: {
+      kicker:"Göteborg · 西海岸的荷兰式港口",
+      title:"<em>Feskekôrka</em><br>哥德堡人的海鲜宗教",
+      html: `
+        <p class="lede">哥德堡 1621 Gustavus Adolphus 创建——瑞典需要西海岸出海口，因为东海岸要绕过丹麦控制的厄勒海峡（每过一次要交税）。当时哥德堡所在地 Bohuslän 海岸夹在丹麦（南边斯堪尼亚）和挪威（北边）之间。<strong>城市规划由荷兰人做的</strong>——所以你看运河、棋盘格、用河流当城墙——跟阿姆斯特丹同模板。</p>
+
+        <h3>Gustavus Adolphus · 17 世纪瑞典最伟大国王</h3>
+        <p>1611 即位 16 岁，1632 战死 Lützen 38 岁——Lützen 那场战役彻底改变 30 年战争走向，新教阵营靠他撑住。他遗物现在在斯德哥尔摩 Livrustkammaren（你 D4 看过的血衣就是 Lützen 中弹那件）。哥德堡 Gustaf Adolfs torg 中央是他骑马雕像。</p>
+
+        <h3>哥德堡大教堂 · Carl Larsson 的瑞典美学</h3>
+        <p>1633 第一代建，三次烧毁，现在的是 1815 年建——新古典主义而非中世纪。内部有 <strong>Carl Larsson 1880s 壁画</strong>——19 世纪瑞典"民族浪漫主义"画家。他的水彩画里典型的红木屋+花园+健康儿童形象，<em class="hl">定义了"瑞典美学"的视觉模板（你在 IKEA 招贴画上看到的"瑞典感"就是 Carl Larsson 给的）</em>。</p>
+
+        <h3>Feskekôrka 鱼教堂 · 近乎宗教的海鲜体验</h3>
+        <p>1874 开业。外形是新哥特式教堂——尖顶、长方形、彩绘玻璃。但<em class="hl">从来不是教堂——是个鱼市</em>。建筑师 Victor von Gegerfelt 设计时玩讽刺：哥德堡人沿海岸，"鱼"几乎是宗教——所以建鱼市就建"鱼教堂"。<strong>哥德堡人对海鲜的尊重就刻在尖顶里。</strong></p>
+        <p>2020–24 翻修后重开，二楼现在是海鲜餐厅。一楼依然卖鱼。</p>
+
+        <h3>HAGA 老街区（D6 早上去）</h3>
+        <p>1648 建——哥德堡第一个城外工人区。19 世纪是哥德堡最贫民区，1960s 计划整体拆除（瑞典 Miljonprogrammet 现代主义清贫民窟运动），居民抗议保住。</p>
+        <p>鹅卵石街 + <strong>三层 landshövdingehus</strong>（底层石头 + 上两层木头）——这种建筑只在 19 世纪哥德堡有，因为当年木屋限高两层，<em class="hl">工人发明这种"半石半木"绕过法律</em>。</p>
+
+        <h3>Bohuslän 海岸 · 青铜时代岩画</h3>
+        <p>Svenshögen 在 Bohuslän 内陆 25 km。Bohuslän 海岸是青铜时代岩画 <strong>hällristningar</strong> 大本营——Tanum 岩画群（UNESCO 1994）有 600 个石板、6 万个图像，3500 BC 到 500 AD 累积。图像内容：长船、太阳战车、武士、性爱仪式、巨脚（被称为"神的脚"）、青铜剑舞。</p>
+      `
+    },
+    vocab: {
+      tips: [
+        "D5 = 7/8 周三 = 哥德堡拥堵费免费日！全程 0 费用。",
+        "Svenshögen 是 Bohuslän 海岸入口村——早起可以散步看花岗岩。",
+        "HAGA + Café Husaren + Feskekôrka 外观日光照留 D6 早上拍，今晚先吃饭。"
+      ],
+      words: [
+        { w:"fisk", lang:"瑞", meaning:"鱼" },
+        { w:"kyrka", lang:"瑞", meaning:"教堂" },
+        { w:"feskekôrka", lang:"瑞·哥德堡方言", meaning:"鱼教堂" },
+        { w:"torg", lang:"瑞", meaning:"广场 / 市场" },
+        { w:"hamn", lang:"瑞", meaning:"港口" },
+        { w:"älv", lang:"瑞", meaning:"河" },
+        { w:"hällristning", lang:"瑞", meaning:"岩画" },
+        { w:"landshövdingehus", lang:"瑞", meaning:"半石半木房屋" },
+        { w:"räka", lang:"瑞", meaning:"虾" },
+        { w:"ostron", lang:"瑞", meaning:"牡蛎" }
+      ]
+    }
+  },
+
+  /* ============ DAY 6 ============ */
+  {
+    id: 6,
+    date: "2026-07-09",
+    dateLabel: "7.9 周四",
+    dateShort: "Thu 9 Jul",
+    title: "Svenshögen → 哥德堡早 → 马尔默 → 哥本哈根",
+    titleEn: "Svenshögen → Göteborg morning → Malmö → CPH",
+    label: "HAGA 肉桂卷 · Malmöhus · 旋转大楼",
+    drive: "440 km · 5 h 纯开 + 厄勒海峡桥",
+    stay: {
+      name: "A&O Copenhagen · 两个房",
+      meta: "Sydhavn（地铁 M1/M3）+ Nørrebro（市中心北）",
+      address: "A&O Copenhagen Sydhavn, Sydhavns Pl. 4, 2450 København, Denmark",
+      note: "另一个房：A&O Copenhagen Nørrebro, Tagensvej 135-137, 2200 København。A&O 停车通常付费街边或附近停车场。"
+    },
+    eat: [
+      { featured:true, name:"Restaurant Palægade", tag:"今晚推荐",
+        meta:"哥本哈根 · 周四 11:30–17 + 18–00 · 人均 400–700 DKK · 4.6 星",
+        note:"经典丹麦菜 + 法式。D7 已经预留 Schønnemann + Barr，今晚选 Palægade。",
+        address:"Palægade 8, 1261 København, Denmark" },
+      { name:"Bullen — Två Krögare · D6 午餐", tag:"马尔默",
+        meta:"周四 11:30–01:00 · 人均 300–500 SEK · 4.5 星",
+        note:"马尔默最经典的传统瑞典餐厅：köttbullar + 鲱鱼拼盘 + fisksoppa 鱼汤。",
+        address:"Storgatan 35, 211 42 Malmö, Sweden" },
+      { name:"Saltimporten Canteen · D6 午餐", tag:"13:30 前到",
+        meta:"周四 11:00–14:00 · 人均 150–250 SEK · 4.7 星",
+        note:"港口仓库改造，每天一肉一素，米其林级品质亲民价格。仅工作日午餐。",
+        address:"Grimsbygatan 24, 211 20 Malmö, Sweden" },
+      { name:"Restaurant Barr", tag:"备选",
+        meta:"哥本哈根 · 人均 600–900 DKK",
+        note:"前 Noma 团队（D7 预留）。",
+        address:"Refshalevej 96, 1432 København, Denmark" }
+    ],
+    timeline: [
+      { time:"07:30", label:"Svenshögen 出发", major:true, note:"早起，今天满。" },
+      { time:"07:30–08:15", label:"Svenshögen → 哥德堡市中心 60 km / 45 分钟" },
+      { time:"08:15–08:30", label:"哥德堡停车 HAGA 周边或 Lorensberg Q-Park" },
+      { time:"08:30–09:30", label:"HAGA 老街区", major:true,
+        note:"鹅卵石街、19 世纪 landshövdingehus，早上人少最美。",
+        address:"Haga Nygata, 411 22 Göteborg, Sweden" },
+      { time:"09:00–09:30", label:"Café Husaren · Hagabullen", major:true,
+        note:"巨型肉桂卷直径 30 cm，半斤重——一个能吃一上午。瑞典 fika 文化的工业革命遗产。",
+        address:"Haga Nygata 28, 413 01 Göteborg, Sweden" },
+      { time:"09:30–10:30", label:"Feskekôrka 外观 + 市区散步",
+        note:"早上日光下拍照比晚上美。Götaplatsen、Avenyn 路过。",
+        address:"Fisktorget 4, 411 20 Göteborg, Sweden" },
+      { time:"10:30–13:00", label:"E6 南下经 Halmstad、Helsingborg",
+        note:"中途加油上厕所。" },
+      { time:"13:00–13:30", label:"抵马尔默" },
+      { time:"13:00–14:30", label:"马尔默午餐 + 城堡", major:true,
+        note:"13:30 到 → Saltimporten 还来得及；之后 → Bullen。",
+        address:"Storgatan 35, 211 42 Malmö, Sweden" },
+      { time:"13:30–14:00", label:"马尔默城堡 Malmöhus",
+        note:"15 世纪丹麦人建，门票 60 SEK，周一闭馆——周四 ✓。1530s Christian III 重建成斯堪的纳维亚最古老的文艺复兴城堡。",
+        address:"Malmöhusvägen 6, 211 18 Malmö, Sweden" },
+      { time:"14:00–14:20", label:"小广场 Lilla Torg 喝咖啡",
+        note:"1592 开辟。16–17 世纪汉萨风格三角山墙红砖房。",
+        address:"Lilla Torg, 211 34 Malmö, Sweden" },
+      { time:"14:20–14:30", label:"旋转大楼 Turning Torso 外观拍照",
+        note:"2005 Calatrava 设计，190 米旋转 90 度。",
+        address:"Lilla Varvsgatan 14, 211 15 Malmö, Sweden" },
+      { time:"14:30–15:10", label:"跨厄勒海峡大桥回哥本哈根", major:true,
+        note:"再付一次（网上 423 / 现场 470 DKK）。" },
+      { time:"15:10–16:00", label:"抵哥本哈根，A&O 办入住",
+        address:"Sydhavns Pl. 4, 2450 København, Denmark" },
+      { time:"18:30–20:30", label:"晚餐 · Restaurant Palægade", major:true,
+        address:"Palægade 8, 1261 København, Denmark" }
+    ],
+    stories: {
+      kicker:"Malmö · 丹麦最后的瑞典城市",
+      title:"<em>Skåne 1658</em><br>丹麦帝国的终结",
+      html: `
+        <p class="lede">为什么马尔默是丹麦最后的瑞典城市？马尔默 13 世纪起就是丹麦重要鲱鱼贸易港。1658 Roskilde 条约丹麦输给瑞典，斯堪尼亚 Skåne 全境（含马尔默+隆德+赫尔辛堡）割让给瑞典——这是丹麦帝国终结的标志。所以马尔默老城是丹麦式的（红砖、北德汉萨风格）。</p>
+
+        <h3>Malmöhus 城堡 · 收海峡通行税的工具</h3>
+        <p>1434 丹麦王 Eric of Pomerania（Margrete I 的侄孙、Kalmar 联盟第二任国王）建，用来收 Øresund 海峡通行税——<em class="hl">这位置太关键，谁控制 Malmöhus 就控制海峡北岸税收</em>。1530s Christian III 重建成现在的低矮红砖文艺复兴堡垒——斯堪的纳维亚最古老的文艺复兴城堡。</p>
+        <p>1658 转手瑞典后没继续军用，19 世纪起改监狱——关过苏格兰国王 Bothwell 伯爵（玛丽·斯图亚特的第三任丈夫，被苏格兰流放后丹麦人抓住关在马尔默 5 年直到精神崩溃 1578 死在这）。</p>
+
+        <h3>Lilla Torg · 商人的私设广场</h3>
+        <p>1592 开辟——当时只有"大广场" Stortorget，但大广场都给政治+教堂用，做生意没地方，所以另开个小广场给商人。周围房子都是 16–17 世纪汉萨风格三角山墙红砖房。</p>
+
+        <h3>Turning Torso · 西港重生</h3>
+        <p>2005 建成，Santiago Calatrava 设计。<strong>190 米，54 层，旋转 90 度从底到顶</strong>。选址在西港 Västra Hamnen——原马尔默船厂区，1990s 关闭后改造成可持续生态城区。Turning Torso 是这个改造的旗舰建筑。</p>
+
+        <h3>Saltimporten · 工业港遗产</h3>
+        <p>原 1900 年代盐进口仓库——马尔默工业港遗产改造。2010 开业，名字直译"盐进口商食堂"。<em class="hl">每天只做一肉一素，午饭限 11–14 点</em>。米其林指南 Bib Gourmand 风格但更便宜。极其难订位——大多数人 11:30 排队进。</p>
+
+        <h3>HAGA · 早上拍 Café Husaren</h3>
+        <p>1648 建。19 世纪是哥德堡最贫民区，1960s 抗议保住。<strong>Hagabullen 巨型肉桂卷</strong>：直径 30 cm，半斤重——一个能吃一上午。瑞典 fika 文化（咖啡+甜点+聊天）在哥德堡尤其重——<em class="hl">这是工业革命遗产，纺织工人 10 点 + 15 点强制休息喝咖啡</em>。</p>
+      `
+    },
+    vocab: {
+      tips: [
+        "Saltimporten 仅工作日 11:00–14:00——D6 周四是工作日刚好 ✓。13:30 到马尔默还来得及。",
+        "Malmöhus 周一闭馆，周四开。门票 60 SEK。",
+        "A&O 两个房：Sydhavn 在西南港口区（地铁 M1/M3）；Nørrebro 在市中心北。",
+        "Bastard 餐厅已永久关闭——Bullen 是新增替代。",
+        "D6 = 7/9 周四：瑞典拥堵费免费日 + 离开瑞典，0 费用。"
+      ],
+      words: [
+        { w:"slott", lang:"瑞", meaning:"城堡" },
+        { w:"hus", lang:"瑞/丹", meaning:"房屋" },
+        { w:"torg", lang:"瑞", meaning:"广场" },
+        { w:"hamn", lang:"瑞", meaning:"港口" },
+        { w:"varv", lang:"瑞", meaning:"船厂" },
+        { w:"salt", lang:"瑞", meaning:"盐" },
+        { w:"import", lang:"瑞", meaning:"进口" },
+        { w:"bulle", lang:"瑞", meaning:"圆面包 / 肉桂卷" },
+        { w:"kanelbulle", lang:"瑞", meaning:"肉桂卷" },
+        { w:"sundtold", lang:"丹", meaning:"海峡通行税" }
+      ]
+    }
+  },
+
+  /* ============ DAY 7 ============ */
+  {
+    id: 7,
+    date: "2026-07-10",
+    dateLabel: "7.10 周五",
+    dateShort: "Fri 10 Jul",
+    title: "哥本哈根全天 → 晚归 Farum",
+    titleEn: "Copenhagen all day → Farum",
+    label: "国家博物馆 · 小美人鱼 · Kastellet",
+    drive: "哥本哈根 → Farum 25 km / 30 分钟（晚上开）",
+    stay: {
+      name: "Farum 民宿（同 D1）",
+      meta: "哥本哈根北郊 25 km",
+      address: "Furesøvej 16, 3520 Farum, Denmark",
+      note: "明天 D8 早上要再玩哥本哈根 + 送机，21:00 前到 Farum 休息。"
+    },
+    eat: [
+      { featured:true, name:"Restaurant Barr", tag:"今晚推荐",
+        meta:"周五 17:00–23:30 · 人均 600–900 DKK · 4.3 星",
+        note:"前 Noma 团队，New Nordic。Refshaleøen 工业港区改造。",
+        address:"Refshalevej 96, 1432 København, Denmark" },
+      { name:"Schønnemann · D7 午餐", tag:"经典 smørrebrød",
+        meta:"周五 11:30–17:00 · 人均 250–350 DKK · 4.7 星",
+        note:"1877 开业。丹麦总理、作家、记者午餐据点。必点 Stjerneskud '流星'（鱼+虾+鱼子酱）+ Dyrlægens natmad '兽医的夜宵'。",
+        address:"Hauser Pl. 16, 1127 København, Denmark" }
+    ],
+    timeline: [
+      { time:"08:30–11:30", label:"早餐 + Strøget 退税购物" },
+      { time:"11:30–12:00", label:"占位 · 阿美琳堡换岗",
+        address:"Amalienborg Slotsplads, 1257 København, Denmark" },
+      { time:"12:00–12:45", label:"皇家卫兵换岗 vagtparade", major:true,
+        note:"12:00 准时。皇家卫队 1658 成立，制服蓝大衣+熊皮高帽。旗杆顶有皇家旗就表示女王在。",
+        address:"Amalienborg, 1257 København, Denmark" },
+      { time:"12:45–13:45", label:"Schønnemann 午餐", major:true,
+        note:"1877 经典 smørrebrød 老店。",
+        address:"Hauser Pl. 16, 1127 København, Denmark" },
+      { time:"13:45–14:00", label:"步行到 Nationalmuseet" },
+      { time:"14:00–17:00", label:"丹麦国家博物馆", major:true,
+        note:"门票 150 DKK / 18 岁以下免费（网上 135 DKK）。Trundholm 太阳战车（c.1400 BC）+ Golden Horns + 维京展厅（奥塞贝格船复制品、Mjölnir 项链、Jelling 卢恩石复制品）。",
+        address:"Ny Vestergade 10, 1471 København, Denmark" },
+      { time:"17:00–17:30", label:"步行到腓特烈教堂 Marmorkirken",
+        note:"外观和内部免费。1749 开建为庆祝丹麦王朝 300 周年，仿照罗马 St. Peter。但 1770 经费用尽停工 124 年，1894 私人富商 Tietgen 出钱建完。",
+        address:"Frederiksgade 4, 1265 København, Denmark" },
+      { time:"17:30–19:00", label:"Kastellet 城堡 + 小美人鱼", major:true,
+        note:"1626 Christian IV 建的五角星形要塞，欧洲保存最完整的星堡。小美人鱼 1913 立，被斩首 3 次、炸过 1 次、泼漆无数次——丹麦版'自由女神政治抗议靶子'。",
+        address:"Kastellet, 2100 København, Denmark" },
+      { time:"19:00–20:30", label:"晚餐 · Restaurant Barr", major:true,
+        address:"Refshalevej 96, 1432 København, Denmark" },
+      { time:"20:30–21:00", label:"开车回 Farum 25 km",
+        address:"Furesøvej 16, 3520 Farum, Denmark" }
+    ],
+    stories: {
+      kicker:"国家博物馆 · 把前 6 天整合起来",
+      title:"<em>Trundholm Solvognen</em><br>太阳战车（1400 BC）",
+      html: `
+        <p class="lede">收藏全丹麦最完整的史前+维京遗物，把前 6 天看到的所有线索（罗斯基勒长船、Gamla Uppsala 王墓、Rök 符文）整合成完整丹麦史。</p>
+
+        <h3>Trundholm Solvognen 太阳战车（c. 1400 BC）</h3>
+        <p>1902 年农夫犁地翻出来，丹麦最珍贵青铜时代器物。一匹马拉一个圆盘——<strong>圆盘一面镀金，另一面不镀</strong>。金面代表白天太阳，暗面代表夜里太阳穿过冥界。</p>
+        <p>揭示青铜时代北欧人认为太阳是马拉的战车——<em class="hl">这跟印欧神话核心一致（希腊 Helios 战车、印度 Surya 战车），证明斯堪的纳维亚在 1400 BC 已经融入印欧神话系统。比北欧神话文字记载（13 世纪 Edda）早 2700 年。</em></p>
+
+        <h3>Golden Horns · 失而复得的丑闻</h3>
+        <p>5 世纪原版被 1802 盗走熔毁——大丑闻。1980 重铸复制品展出。原物刻满早期符文 + 神话场景：奥丁的乌鸦、巨人、世界蛇——是日耳曼神话最早视觉证据。</p>
+        <p>丑闻促成了浪漫主义诗人 Adam Oehlenschläger 1802 写的诗《Guldhornene》——<em class="hl">这首诗启动了丹麦黄金时代文学</em>。</p>
+
+        <h3>阿美琳堡 + 腓特烈教堂</h3>
+        <p>阿美琳堡 1750–60 建——4 座一模一样宫殿围一个广场，巴洛克对称的极致。1794 Christiansborg 烧毁后丹麦王室紧急买下这 4 栋私人宫殿做新王宫，一直用到今天。</p>
+        <p>腓特烈教堂 1749 开建——仿照罗马 St. Peter 圣彼得大教堂的圆顶。<em class="hl">但 1770 因经费用尽停工——只建到圆顶下方一半。停了 124 年</em>。1894 私人富商 Carl Frederik Tietgen 出钱建完，但用便宜的丹麦石灰岩代替挪威大理石。圆顶 31 米直径，欧洲第三大。</p>
+
+        <h3>Kastellet · 文艺复兴军事工程顶峰</h3>
+        <p>1626 Christian IV 建，1664 Frederik III 完工——<strong>五角星形要塞，欧洲保存最完整的星堡</strong>。设计哲学：星形角让防御方可以从相邻棱角侧射火力杀进入凹角的攻方——文艺复兴军事工程学顶峰，实现防御火力的无死角覆盖。</p>
+        <p>教堂 Kastelskirken 1704：内部正中间有一根<em class="hl">囚徒柱</em>——上方铁链原本悬空浮着 18 世纪关押的军监犯人，让他们在主日礼拜时听道（但够不到）。</p>
+
+        <h3>小美人鱼 · 丹麦的政治抗议靶子</h3>
+        <p>1913 立，安徒生 1837 童话。Edvard Eriksen 雕，原型是芭蕾舞演员 Ellen Price。1.25 米铜像——很小，常被游客失望。这是 Carlsberg 啤酒厂创始人之子 Carl Jacobsen 捐的。</p>
+        <p><em class="hl">丹麦版"自由女神政治抗议靶子"：历史上被斩首 3 次（1964, 1998, 2003）、炸过 1 次（2003，被抗议者整体炸进海里）、泼漆无数次。</em></p>
+
+        <h3>Schønnemann · 1877 老 smørrebrød</h3>
+        <p>smørrebrød = 黑麦面包 + 黄油 + 各种海鲜/肉/蛋。早午餐文化在丹麦相当于法国的 brasserie。100+ 种组合，必点：<strong>Stjerneskud "流星"</strong>（鱼+虾+鱼子酱）+ <strong>Dyrlægens natmad "兽医的夜宵"</strong>（黑麦面包+猪肝酱+腌牛肉+洋葱）。</p>
+      `
+    },
+    vocab: {
+      tips: [
+        "Nationalmuseet 网上预订省 10%（135 vs 150 DKK）。",
+        "Marmorkirken 圆顶夏季 13:00 一次性开放——与午餐时间冲突，放弃登顶。",
+        "卫兵换岗 12:00 准时——11:30 占位最佳。",
+        "Schønnemann 旺季提前 1 周订位。"
+      ],
+      words: [
+        { w:"smørrebrød", lang:"丹", meaning:"开放式三明治" },
+        { w:"havfrue", lang:"丹", meaning:"美人鱼" },
+        { w:"kastellet", lang:"丹", meaning:"星形要塞" },
+        { w:"vagtparade", lang:"丹", meaning:"卫兵换岗" },
+        { w:"slot", lang:"丹", meaning:"宫殿" },
+        { w:"kirke", lang:"丹", meaning:"教堂" },
+        { w:"marmor", lang:"丹", meaning:"大理石" },
+        { w:"stjerneskud", lang:"丹", meaning:"流星（也是 smørrebrød 名字）" },
+        { w:"dyrlæge", lang:"丹", meaning:"兽医" },
+        { w:"sol-vogn", lang:"古日耳曼", meaning:"太阳战车" }
+      ]
+    }
+  },
+
+  /* ============ DAY 8 ============ */
+  {
+    id: 8,
+    date: "2026-07-11",
+    dateLabel: "7.11 周六",
+    dateShort: "Sat 11 Jul",
+    title: "Farum → Frederiksborg → 送机 → Hamburg",
+    titleEn: "Farum → Hillerød → CPH airport → Hamburg",
+    label: "丹麦凡尔赛 · Christian IV 建筑王",
+    drive: "380 km · 4 h + 大带桥",
+    stay: {
+      name: "A&O Hamburg Hammer Kirche",
+      meta: "Hamm 区 · 仅过夜",
+      address: "Hammer Landstraße 170, 20537 Hamburg, Germany",
+      note: "21:30 才到，先睡。明早出发前可以买个 Franzbrötchen（汉堡肉桂酥）路上吃。"
+    },
+    eat: [
+      { featured:true, name:"Hillerød 老城午餐", tag:"D8 中",
+        meta:"Frederiksborg 城堡附近",
+        note:"参观完城堡后在老城找一家。",
+        address:"Hillerød, Denmark" },
+      { name:"A&O Hammer Kirche 附近", tag:"D8 晚",
+        meta:"21:30 才到 · 简餐",
+        note:"汉堡东区是工人和移民区——烤肉、土耳其菜、披萨。或买点东西回房间吃。",
+        address:"Hammer Landstraße 170, 20537 Hamburg, Germany" }
+    ],
+    timeline: [
+      { time:"08:30–09:00", label:"Farum → Hillerød 25 分钟", major:true,
+        address:"Frederiksborg Slot, 3400 Hillerød, Denmark" },
+      { time:"09:00–12:30", label:"Frederiksborg slot · 丹麦凡尔赛", major:true,
+        note:"10:00 开门，09:00 先看湖光花园外观。门票 90 DKK / 18 岁以下免费。1606–20 Christian IV 建，1859 大火后 Carlsberg 创始人 J.C. Jacobsen 出钱重建成国家历史博物馆。皇家礼拜堂 Slotskirke 是火灾奇迹幸存——17 世纪原物，1671–1840 所有丹麦国王在此涂油加冕。",
+        address:"Frederiksborg Slot, Møntportvejen 10, 3400 Hillerød, Denmark" },
+      { time:"12:30–13:30", label:"Hillerød 老城午餐",
+        address:"Slotsgade, 3400 Hillerød, Denmark" },
+      { time:"13:30–14:30", label:"Hillerød → CPH 机场 55 km / 50 分钟",
+        address:"Copenhagen Airport, 2770 Kastrup, Denmark" },
+      { time:"14:30–16:00", label:"B 组办登机 + 退税；A 组陪到机场", major:true,
+        note:"B 组 19:00 起飞。" },
+      { time:"16:00", label:"B 组进安检；A 组离开 CPH" },
+      { time:"16:00–17:00", label:"A 组免税店 / 午茶休息",
+        note:"确认 B 组安全后再走。" },
+      { time:"17:00–18:00", label:"跨大带桥 Storebælt", major:true,
+        note:"260 DKK 再付一次。" },
+      { time:"18:00–21:30", label:"大带桥 → Padborg → Hamburg 3.5 h",
+        note:"德国夏天 21:30 还亮。" },
+      { time:"21:30–22:00", label:"抵 A&O Hammer Kirche 入住",
+        address:"Hammer Landstraße 170, 20537 Hamburg, Germany" }
+    ],
+    stories: {
+      kicker:"Frederiksborg · 丹麦凡尔赛",
+      title:"<em>Christian IV</em><br>建筑王与他的回响",
+      html: `
+        <p class="lede">D7 没去的"丹麦凡尔赛"——Hillerød Frederiksborg slot，距离 Farum 只 20 km，往 CPH 机场方向延伸，非常顺路。皇家宫殿主题跟 Roskilde / Lund / Gamla Uppsala 一致。</p>
+
+        <h3>Christian IV · 这个人</h3>
+        <p>1577–1648 在位 60 年——丹麦历史在位最久国王。建过的：哥本哈根 Børsen 证券交易所、Rosenborg 罗森堡宫、Rundetårn 圆塔、整个 Christianshavn 区、Frederiksborg、Kronborg 翻修（Hamlet 那城堡）、奥斯陆改建（挪威首都那时叫 Christiania 就是他命名的）。</p>
+        <p>但军事上灾难：1626 加入 30 年战争输给皇帝瓦伦斯坦，1644 跟瑞典打 Torstenson 战争又输——<em class="hl">丹麦从北欧第一强国掉到二线</em>。个人传奇：戴金链子右耳穿耳环，活到 70 岁，私生子 26 个。</p>
+
+        <h3>Frederiksborg · 为什么是"丹麦凡尔赛"</h3>
+        <p>1606–20 Christian IV 建。<strong>三个小岛上</strong>——主岛、桥岛、入口岛，全建在 Slotssøen 城堡湖水面上。砖红色 + 砂岩 + 铜绿屋顶。风格是 <em class="hl">荷兰文艺复兴</em>（不是法国巴洛克）——汉萨同盟+荷兰商人在波罗的海贸易的影响。这种风格丹麦+南瑞典+北德国都有，是新教北欧的统一审美。</p>
+
+        <h3>1859 大火 + Carlsberg 重建</h3>
+        <p>Christian IV 留下的 Frederiksborg 1859 一场大火烧掉 2/3，原因是烧柴炉烟囱裂缝。<strong>啤酒厂创始人 J.C. Jacobsen（哥本哈根 Carlsberg 创始人）出钱重建</strong>——条件是内部必须做成国家历史博物馆。</p>
+        <p><em class="hl">Carlsberg 在丹麦文化里的位置：既给国家博物馆捐了维京遗物，又捐了小美人鱼，又重建了 Frederiksborg——丹麦"国家审美"半个由 Carlsberg 出钱。</em>1882 重开为博物馆。所以你今天看到的是 1882 翻新版，但外观+主厅完全照原样。</p>
+
+        <h3>内部精华</h3>
+        <ul>
+          <li><strong>皇家礼拜堂 Slotskirke</strong>（1620）：火灾奇迹幸存——只有这部分是 17 世纪原物。Christian IV 加冕礼拜堂，柏木镶嵌+乌木+雪花石膏+银。<em class="hl">1671–1840 所有丹麦国王在此涂油加冕</em></li>
+          <li><strong>骑士厅 Riddersalen</strong>："丹麦最美房间"。镶板天花板+巨型壁炉+丹麦皇室肖像</li>
+          <li><strong>大画廊 Audienssalen</strong>：从中世纪到现代的丹麦皇家肖像编年史——你可以从墙上看完整个丹麦王朝史</li>
+        </ul>
+      `
+    },
+    vocab: {
+      tips: [
+        "大带桥 D8 离开丹麦 260 DKK 再付一次。总过桥费 4 次 ≈ €183。",
+        "B 组退税 CPH Terminal 2/3 出关前预留 1 小时。",
+        "A&O Hamburg 入住时间 15:00 起：21:30 到完全没问题。",
+        "若方案 B（Rosenborg / Tivoli 二选一）：Rosenborg 145 DKK / Tivoli 175 DKK。"
+      ],
+      words: [
+        { w:"Schloss", lang:"德", meaning:"城堡" },
+        { w:"slot", lang:"丹", meaning:"城堡" },
+        { w:"slotskirke", lang:"丹", meaning:"宫廷礼拜堂" },
+        { w:"riddersal", lang:"丹/瑞", meaning:"骑士厅" },
+        { w:"audienssal", lang:"丹", meaning:"觐见厅" },
+        { w:"sø", lang:"丹", meaning:"湖" },
+        { w:"konge", lang:"丹", meaning:"国王" },
+        { w:"dronning", lang:"丹", meaning:"王后" },
+        { w:"Franzbrötchen", lang:"德·汉堡", meaning:"汉堡肉桂酥" }
+      ]
+    }
+  },
+
+  /* ============ DAY 9 ============ */
+  {
+    id: 9,
+    date: "2026-07-12",
+    dateLabel: "7.12 周日",
+    dateShort: "Sun 12 Jul",
+    title: "Hamburg → Kassel → Malsfeld",
+    titleEn: "Hamburg → Kassel → Malsfeld",
+    label: "格林兄弟 · Bergpark 水景日（周日 14:30）",
+    drive: "350 km · 3.5 h 纯开 + Kassel 5–6 h",
+    stay: {
+      name: "Malsfeld 民宿",
+      meta: "Kassel 南 20 km · 仅过夜",
+      address: "Lindenring 2, 34323 Malsfeld, Hessen, Germany",
+      note: "今天是 Bergpark 水景日（周日 14:30）——D9 = 7.12 周日 = 水景日 ✅"
+    },
+    eat: [
+      { featured:true, name:"Restaurant Lohmann", tag:"今晚推荐",
+        meta:"Kassel 老牌德餐",
+        note:"传统黑森州菜。",
+        address:"Königstor 8, 34117 Kassel, Germany" },
+      { name:"Brauhaus Knallhütte", tag:"啤酒厂自营",
+        meta:"Kassel 郊外",
+        note:"本地啤酒厂，自酿啤酒 + 德式烤肉。",
+        address:"Knallhütte, 34225 Baunatal, Germany" },
+      { name:"Kaskadenwirtschaft 啤酒花园", tag:"水景后",
+        meta:"Schloss Wilhelmshöhe 旁",
+        note:"300 年前贵族水景表演结束就在这喝酒。啤酒+德国香肠+Sachertorte。",
+        address:"Schlosspark 13, 34131 Kassel, Germany" }
+    ],
+    timeline: [
+      { time:"08:30–09:00", label:"A&O Hamburg 早餐 + 退房" },
+      { time:"09:00", label:"Hamburg 出发，A7 南下", major:true },
+      { time:"09:00–12:00", label:"开 3 h 到 Kassel 北郊", note:"中途 Hannover 服务区休息。" },
+      { time:"12:00–12:30", label:"Kassel 市中心停车",
+        note:"Parkhaus Grimmwelt 或 Parkhaus Garde-du-Corps-Platz，步行 5 分钟。",
+        address:"Parkhaus Grimmwelt, 34117 Kassel, Germany" },
+      { time:"12:30–13:30", label:"Grimmwelt Kassel", major:true,
+        note:"门票 €10。周日 10:00–18:00 ✅。按字母表 25 个互动展区，中心是 Grimm 兄弟亲笔注释的童话原稿。",
+        address:"Weinbergstraße 21, 34117 Kassel, Germany" },
+      { time:"13:30–13:45", label:"Grimmwelt → 山顶 8 km / 12 分钟",
+        note:"A44 → Wilhelmshöhe 出口。" },
+      { time:"13:45–14:30", label:"Herkules 停车 + 步行到雕像", major:true,
+        note:"水景日 €7。步行 5 分钟到 Herkules 雕像脚下占位。",
+        address:"Schlosspark 28, 34131 Kassel, Germany" },
+      { time:"14:30", label:"大瀑布 Kaskaden 启动", major:true,
+        note:"Oktogon 下方 250 级巴洛克石阶水梯。" },
+      { time:"15:05", label:"Steinhöfer Wasserfall",
+        note:"1793 加建的浪漫主义瀑布——故意搞成'自然落石'风格。" },
+      { time:"15:20", label:"Teufelsbrücke 魔鬼桥", major:true,
+        note:"'魔鬼造桥'传说：黑森伯爵让魔鬼帮建桥换灵魂，结果让羊先过桥骗了魔鬼——跟 D2 隆德 Finn 巨人柱同一神话原型。" },
+      { time:"15:30", label:"Aquädukt 罗马式渡槽",
+        note:"1788–1792 仿罗马 Pont du Gard，故意建成'考古废墟'。" },
+      { time:"15:45", label:"Große Fontäne 大喷泉", major:true,
+        note:"52 米水柱——300 年前纯重力做到 52 米是工程奇迹。" },
+      { time:"16:00", label:"水景结束 · Schloss Wilhelmshöhe 前",
+        address:"Schloss Wilhelmshöhe, 34131 Kassel, Germany" },
+      { time:"16:00–17:30", label:"Kaskadenwirtschaft 啤酒花园休息",
+        note:"啤酒+德国香肠。",
+        address:"Schlosspark 13, 34131 Kassel, Germany" },
+      { time:"17:30–18:00", label:"取车开 30 分钟到 Kassel 市内吃晚饭" },
+      { time:"18:00–19:30", label:"Kassel 市内晚餐",
+        address:"Königstor 8, 34117 Kassel, Germany" },
+      { time:"19:30–20:00", label:"Kassel → Malsfeld 30 分钟",
+        address:"Lindenring 2, 34323 Malsfeld, Germany" },
+      { time:"20:00", label:"Malsfeld 入住", major:true }
+    ],
+    stories: {
+      kicker:"Kassel · 格林兄弟 + UNESCO 重力奇迹",
+      title:"<em>Grimm Gesetz</em><br>童话只是手段",
+      html: `
+        <p class="lede">城市本身没特别有名——但两件事让它永远进世界史：1. 格林兄弟在这工作 1798–1841（43 年）；2. Bergpark Wilhelmshöhe——黑森伯爵 18 世纪山地园林，2013 UNESCO 世界遗产。</p>
+
+        <h3>Grimm 兄弟 · 首先是语言学家</h3>
+        <p><em class="hl">关键认知：他们首先是语言学家——收集童话是为了通过民间口语重建日耳曼民族失落的语言之根。童话是手段，民族学术建构才是目的。</em></p>
+        <p><strong>Jacob Grimm（1785–1863）</strong>：Grimm 定律——印欧语系辅音演变规律（拉丁语 p → 日耳曼语 f：pater → father；piscis → fish）。这一条定律奠定了现代历史语言学。</p>
+        <p><strong>Wilhelm Grimm（1786–1859）</strong>：文学整理者。负责把童话润色成可读文学——Jacob 收集原始版本（往往血腥），Wilhelm 改成儿童版本。</p>
+        <p>两人一辈子合写——几乎日夜在一起。1846 一起搬柏林做柏林洪堡大学教授+做德语大字典 Deutsches Wörterbuch（从 A 开始，他们到 F 就死了——这字典 1838 开始编，1961 才完成，<em class="hl">123 年</em>）。</p>
+
+        <h3>童话的黑暗真相</h3>
+        <p>第一版 1812《儿童与家庭童话集》远比迪士尼版本黑暗——这些残酷情节反映了前工业时代德国农村艰苦的生活现实：</p>
+        <ul>
+          <li><strong>白雪公主</strong>：后母是亲妈（不是后妈！）——亲妈对女儿的诅咒；最后亲妈被强迫穿烧红铁鞋跳舞到死</li>
+          <li><strong>灰姑娘</strong>：姐姐为了穿水晶鞋砍掉脚趾和脚跟；鸽子最后啄瞎她们眼睛</li>
+          <li><strong>小红帽</strong>：被狼吃掉就完了——猎人救人版是 Wilhelm 后来加的</li>
+          <li><strong>韩塞尔与葛雷特</strong>：父亲是主动想丢弃孩子的（不是被后母逼的）</li>
+        </ul>
+        <p>Wilhelm 在 1812–1857 七版中越改越温和+越基督教化。原因是市场是中产家庭买给小孩，残酷版本卖不动。<strong>来源真相</strong>：<em class="hl">90% 不是"农民老奶奶讲的"——是格林兄弟中产 + 法国胡格诺移民家庭的女性朋友讲的</em>。最重要来源 Dorothea Viehmann 是法国胡格诺裁缝的女儿——所以很多"德国童话"其实是法国童话。</p>
+
+        <h3>Bergpark · 重力奇迹</h3>
+        <p>2013 UNESCO："世界最大、最完整的巴洛克+浪漫主义山地园林"。建造时间 1696–1717 + 1789–1828，跨 130 年三代黑森伯爵接力建。占地 2.4 平方公里——<em class="hl">比纽约中央公园还大 80%——而且是山，垂直落差 240 米</em>。</p>
+        <p><strong>整个园林只靠重力运水</strong>——18 世纪的神级工程：300 年前的纯重力水景系统，没有电、没有泵。750 立方米水从山顶 Herkules 蓄水池放出来，自上而下流 2.3 km 山道，90 分钟全部用完。</p>
+
+        <h3>Herkules · 权力欲望的物化</h3>
+        <p>1714 建 70.5 米——全世界最大的 Hercules 雕像。模仿罗马 Farnese Hercules。<em class="hl">核心象征：Hercules 在巴洛克语境是国家力量的拟人——黑森伯爵自比英雄。整个工程是权力欲望的物化：不仅要统治土地（巨像俯瞰全境），还要通过工程统治水流（控制 750 立方米水的释放时刻就是控制自然秩序本身）。</em></p>
+
+        <h3>魔鬼桥 · 神话原型闭环</h3>
+        <p>15:20 Teufelsbrücke 魔鬼桥："魔鬼造桥"传说：黑森伯爵让魔鬼帮建桥换灵魂，结果让羊先过桥骗了魔鬼。<strong>跟 D2 隆德大教堂 Finn 巨人柱同一神话原型</strong>（古日耳曼"谁建大教堂/大桥？"答："巨人/魔鬼帮的，人耍诈骗过它"）——<em class="hl">这趟旅行的"巨人/魔鬼造工程"神话主题从隆德地下室到 Kassel 山道完整闭环</em>。</p>
+      `
+    },
+    vocab: {
+      tips: [
+        "推荐'自上而下'= 上山到 Herkules → 跟水流走 2.3 km → 16:00 到 Schloss。",
+        "Bergpark Shuttle：水景日 10:00–17:00 每 15–20 分钟，Schloss ↔ 上方水景点，€2/人。",
+        "门票 Bergpark + Wasserspiele 全免费，只付停车 €7。",
+        "Grimmwelt 周日 10:00–18:00 ✅，门票 €10。"
+      ],
+      words: [
+        { w:"Märchen", lang:"德", meaning:"童话" },
+        { w:"Wasserspiele", lang:"德", meaning:"水景表演" },
+        { w:"Bergpark", lang:"德", meaning:"山地园林" },
+        { w:"Kaskade", lang:"德", meaning:"瀑布、阶梯瀑" },
+        { w:"Teufel", lang:"德", meaning:"魔鬼" },
+        { w:"Brücke", lang:"德", meaning:"桥" },
+        { w:"Aquädukt", lang:"德", meaning:"渡槽" },
+        { w:"Fontäne", lang:"德", meaning:"喷泉" },
+        { w:"Schloss", lang:"德", meaning:"宫殿" },
+        { w:"Wald", lang:"德", meaning:"森林（格林童话核心场所）" }
+      ]
+    }
+  },
+
+  /* ============ DAY 10 ============ */
+  {
+    id: 10,
+    date: "2026-07-13",
+    dateLabel: "7.13 周一",
+    dateShort: "Mon 13 Jul",
+    title: "Malsfeld → 苏黎世",
+    titleEn: "Malsfeld → Zürich · home",
+    label: "回家 · A7 → A5 → A8 → 进瑞士",
+    drive: "545 km · 5.5 h 纯开",
+    stay: {
+      name: "苏黎世 · 家",
+      meta: "Welcome home 🏡",
+      address: "Zürich, Switzerland",
+      note: "瑞士 vignette CHF 40 已经在车上。"
+    },
+    eat: [
+      { featured:true, name:"高速服务区午餐", tag:"路餐",
+        meta:"Karlsruhe / Würzburg 附近",
+        note:"AutoBahn Raststätte。",
+        address:"A5/A7 Raststätte, Germany" }
+    ],
+    timeline: [
+      { time:"08:30", label:"Malsfeld 出发", major:true,
+        address:"Lindenring 2, 34323 Malsfeld, Germany" },
+      { time:"08:30–11:30", label:"Malsfeld → Karlsruhe/Würzburg 3 h" },
+      { time:"11:30–12:30", label:"午餐" },
+      { time:"12:30–17:00", label:"继续到苏黎世 4.5 h", major:true,
+        note:"A7 → A5 → A8 → 进瑞士。",
+        address:"Zürich, Switzerland" },
+      { time:"17:00", label:"到家 🏡", major:true,
+        address:"Zürich, Switzerland" }
+    ],
+    stories: {
+      kicker:"Tack och hej då · Tak og farvel",
+      title:"<em>10 晚 · 11 天</em><br>瑞士 → 北欧 → 瑞士",
+      html: `
+        <p class="lede">回家路。从哥廷根的科学圣城出发，经维京船博物馆、隆德 Finn 巨人柱、Rök 卢恩石、Gamla Uppsala 王墓、Stockholm 维京世界、哥德堡 Feskekôrka、马尔默 Malmöhus、哥本哈根国家博物馆、Frederiksborg、Grimm 兄弟，到 Bergpark 重力奇迹——一条完整的"巨人/魔鬼造工程"神话主题从隆德地下室到 Kassel 山道完整闭环。</p>
+
+        <h3>路上回顾</h3>
+        <ul>
+          <li><strong>D0 哥廷根</strong>：Gauss 17 边形、Hilbert "我们必须知道"、诺贝尔之环</li>
+          <li><strong>D1 哥本哈根</strong>：双子城首都的诞生、Absalon 主教、Nyhavn</li>
+          <li><strong>D2 维京 → 中世纪</strong>：Roskilde 长船、Lund Finn 巨人柱、Gränna 红点鲑</li>
+          <li><strong>D3 异教最后堡垒</strong>：Rök 卢恩石、Gamla Uppsala 王墓、Odinsborg 蜜酒</li>
+          <li><strong>D4 Stockholm</strong>：皇宫、维京世界、最美地铁站、Pelikan</li>
+          <li><strong>D5 哥德堡</strong>：Feskekôrka 鱼教堂海鲜晚餐</li>
+          <li><strong>D6 马尔默</strong>：HAGA 肉桂卷、Malmöhus、Saltimporten</li>
+          <li><strong>D7 哥本哈根</strong>：太阳战车、Kastellet、小美人鱼</li>
+          <li><strong>D8 Frederiksborg</strong>：丹麦凡尔赛、Christian IV、Carlsberg 重建</li>
+          <li><strong>D9 Kassel</strong>：Grimm 兄弟语言学、Bergpark 重力奇迹、魔鬼桥</li>
+          <li><strong>D10</strong>：回家 🏡</li>
+        </ul>
+
+        <h3>下次再见</h3>
+        <p>没去的：Helsingør 哈姆雷特城堡、Tanum 青铜时代岩画、Visingsö 岛、Christianshavn 区。下次。</p>
+      `
+    },
+    vocab: {
+      tips: [
+        "瑞士 vignette：CHF 40，已在车上。",
+        "德国境内：进 Hamburg / Frankfurt LEZ 需 Umweltplakette（汽油车通常自动满足 Euro 4+）。",
+        "Green Card：丹麦 + 瑞典 + 德国默认覆盖。"
+      ],
+      words: [
+        { w:"tak", lang:"丹", meaning:"谢谢" },
+        { w:"tack", lang:"瑞", meaning:"谢谢" },
+        { w:"danke", lang:"德", meaning:"谢谢" },
+        { w:"hej då", lang:"瑞", meaning:"再见" },
+        { w:"farvel", lang:"丹", meaning:"再见" },
+        { w:"auf Wiedersehen", lang:"德", meaning:"再见" },
+        { w:"vignette", lang:"德/瑞士", meaning:"高速公路通行证" },
+        { w:"Heimreise", lang:"德", meaning:"返乡之旅" }
+      ]
+    }
+  }
+];
+
+/* ============================================================
+   APP
+============================================================ */
+
+const app = document.getElementById('app');
+const toast = document.getElementById('toast');
+
+let state = {
+  view: 'home',     // 'home' | 'day'
+  dayIdx: 0,
+  modal: null,       // null | 'stories' | 'vocab' | 'stay' | 'eat'
+};
+
+const TRIP_START = new Date('2026-07-03T00:00:00');
+const TRIP_END = new Date('2026-07-13T23:59:59');
+
+/* Find which day index (if any) is "today". Returns -1 if outside trip. */
+function todayDayIdx(){
+  const now = new Date();
+  if (now < TRIP_START || now > TRIP_END) return -1;
+  const start = new Date('2026-07-03T00:00:00');
+  const diff = Math.floor((now - start) / (1000*60*60*24));
+  return diff >= 0 && diff < TRIP.length ? diff : -1;
+}
+
+/* Demo override: if URL has ?demo=N, treat that day as "today" with simulated time */
+function getEffectiveNow(){
+  const u = new URL(location.href);
+  const demoDay = u.searchParams.get('demo');
+  const demoTime = u.searchParams.get('t'); // HHmm
+  if (demoDay !== null){
+    const day = TRIP[parseInt(demoDay,10)];
+    if (day){
+      const [y,m,d] = day.date.split('-').map(Number);
+      const hh = demoTime ? parseInt(demoTime.slice(0,2),10) : 14;
+      const mm = demoTime ? parseInt(demoTime.slice(2,4),10) : 30;
+      return new Date(y, m-1, d, hh, mm);
+    }
+  }
+  return new Date();
+}
+
+function showToast(msg){
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(()=>toast.classList.remove('show'), 1400);
+}
+
+function copyText(txt, btn){
+  // try clipboard API first, fall back to textarea
+  const done = () => {
+    showToast('已复制 · address copied');
+    if (btn){
+      btn.classList.add('copied');
+      setTimeout(()=>btn.classList.remove('copied'), 900);
+    }
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done).catch(()=>{
+      fallbackCopy(txt); done();
+    });
+  } else {
+    fallbackCopy(txt); done();
+  }
+}
+function fallbackCopy(txt){
+  const ta = document.createElement('textarea');
+  ta.value = txt;
+  ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta);
+  ta.select();
+  try{ document.execCommand('copy'); }catch(e){}
+  document.body.removeChild(ta);
+}
+
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ---------- HOME view ---------- */
+function renderHome(){
+  const tIdx = todayDayIdx();
+  app.innerHTML = `
+    <div class="home">
+      <div class="home-head">
+        <div class="kicker">Nordic Mythology Roadtrip · v7.2</div>
+        <h1 class="home-title">丹麦 + 瑞典 · <em>8 天</em></h1>
+        <div class="home-sub">7.3 苏黎世启程 · 7.13 抵瑞士 · <span>11 天 10 晚</span><br>选择一天，进入故事与时间线。</div>
+      </div>
+      <div class="grid">
+        ${TRIP.map((d,i)=>`
+          <div class="day-card ${i===tIdx?'today':''}" data-day="${i}">
+            <div>
+              <div class="dnum">D${d.id}</div>
+              <div class="ddate">${esc(d.dateShort)} · ${esc(d.dateLabel.split(' ')[1])}</div>
+            </div>
+            <div class="dlabel">${esc(d.label)}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="home-hint">${tIdx>=0 ? '红色卡片是今天 · tap any day to open' : 'tap any day to open'}</div>
+    </div>
+  `;
+  app.querySelectorAll('.day-card').forEach(c=>{
+    c.addEventListener('click', ()=>{
+      state.view='day';
+      state.dayIdx = parseInt(c.dataset.day,10);
+      state.modal = null;
+      render();
+    });
+  });
+}
+
+/* ---------- compute NOW line position in timeline ---------- */
+function positionNowLine(){
+  const day = TRIP[state.dayIdx];
+  const now = getEffectiveNow();
+  const dayDate = day.date;
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  if (todayStr !== dayDate) return; // not today
+
+  const tl = app.querySelector('.timeline');
+  if (!tl) return;
+  const items = [...tl.querySelectorAll('.tl-item')];
+  if (!items.length) return;
+
+  // parse each item's start minute
+  function parseStart(s){
+    // s like "14:30" or "14:30–15:30" or "12:45–13:00"
+    const m = s.match(/^(\d{1,2}):(\d{2})/);
+    if (!m) return null;
+    return parseInt(m[1],10)*60 + parseInt(m[2],10);
+  }
+  const minutes = items.map(it => parseStart(it.dataset.time));
+  const nowMins = now.getHours()*60 + now.getMinutes();
+
+  // find which interval we're in
+  let beforeIdx = -1;
+  for (let i=0;i<minutes.length;i++){
+    if (minutes[i] != null && minutes[i] <= nowMins) beforeIdx = i;
+  }
+  if (beforeIdx === -1){
+    // before first item — place above first
+    const first = items[0];
+    const top = first.offsetTop - 6;
+    placeLine(top, now);
+    return;
+  }
+  if (beforeIdx === items.length-1){
+    // after last item
+    const last = items[items.length-1];
+    const top = last.offsetTop + last.offsetHeight + 6;
+    placeLine(top, now);
+    return;
+  }
+  // interpolate between beforeIdx and beforeIdx+1
+  const a = items[beforeIdx];
+  const b = items[beforeIdx+1];
+  const ma = minutes[beforeIdx];
+  const mb = minutes[beforeIdx+1];
+  let frac = mb===ma ? 0 : (nowMins - ma) / (mb - ma);
+  frac = Math.max(0, Math.min(1, frac));
+  const aMid = a.offsetTop + a.offsetHeight/2;
+  const bMid = b.offsetTop + b.offsetHeight/2;
+  const top = aMid + (bMid - aMid)*frac;
+  placeLine(top, now);
+
+  function placeLine(top, n){
+    let line = app.querySelector('.now-line');
+    if (!line){
+      line = document.createElement('div');
+      line.className = 'now-line';
+      tl.appendChild(line);
+    }
+    const label = `${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')} · now`;
+    line.dataset.label = label;
+    line.style.top = top + 'px';
+  }
+}
+
+/* ---------- DAY view ---------- */
+function renderDay(){
+  const day = TRIP[state.dayIdx];
+  const isToday = todayDayIdx() === state.dayIdx;
+
+  app.innerHTML = `
+    <div class="day-view">
+      <div class="day-header">
+        <div class="back-row">
+          <button class="back-btn" id="backBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            All days
+          </button>
+          <div class="day-pill">Day ${day.id} · ${esc(day.dateLabel)}</div>
+        </div>
+        <h2 class="day-title">${day.title.replace(/→/g,'<em>→</em>')}</h2>
+        <div class="tabs">
+          <button class="tab" data-modal="stories">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V6a2 2 0 0 1 2-2h12v15H6a2 2 0 0 0-2 2z"/><line x1="8" y1="8" x2="14" y2="8"/><line x1="8" y1="12" x2="14" y2="12"/></svg>
+            Stories
+          </button>
+          <button class="tab" data-modal="vocab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 5h12a3 3 0 0 1 3 3v11H6a3 3 0 0 0-3 3V5z"/><path d="M21 5v14"/></svg>
+            Vocab &amp; Tips
+          </button>
+        </div>
+      </div>
+
+      <div class="day-main" id="dayMain">
+        ${isToday ? '<div class="tl-legend"><span>Today</span><span class="dash"></span><span style="color:var(--red)">— — — now</span></div>' : ''}
+        <div class="timeline">
+          <div class="tl-spine"></div>
+          ${day.timeline.map(it => renderTLItem(it)).join('')}
+        </div>
+      </div>
+
+      <div class="day-footer">
+        <button class="foot-btn" data-modal="stay">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V11l9-7 9 7v10"/><path d="M9 21v-6h6v6"/></svg>
+          <span class="lbl">Stay tonight</span>
+          <span class="sub">${esc(day.stay.name)}</span>
+        </button>
+        <button class="foot-btn" data-modal="eat">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2v8a3 3 0 0 0 6 0V2"/><line x1="10" y1="10" x2="10" y2="22"/><path d="M17 2c-1.5 1.5-2 4-2 6 0 2 1 4 2 4v10"/></svg>
+          <span class="lbl">Where to eat</span>
+          <span class="sub">${esc(day.eat[0].name)}</span>
+        </button>
+      </div>
+    </div>
+  `;
+
+  // wire up
+  app.querySelector('#backBtn').addEventListener('click', ()=>{
+    state.view='home'; state.modal=null; render();
+  });
+  app.querySelectorAll('[data-modal]').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      state.modal = b.dataset.modal;
+      renderModal();
+    });
+  });
+  // address copy buttons in timeline
+  app.querySelectorAll('.tl-addr').forEach(b=>{
+    b.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      copyText(b.dataset.addr, b);
+    });
+  });
+
+  // now-line for today
+  requestAnimationFrame(()=>{
+    positionNowLine();
+    // auto-scroll to roughly the now-line
+    if (isToday){
+      const line = app.querySelector('.now-line');
+      const main = app.querySelector('#dayMain');
+      if (line && main){
+        const target = line.offsetTop - main.clientHeight*0.3;
+        main.scrollTo({top: Math.max(0,target), behavior:'smooth'});
+      }
+    }
+  });
+}
+
+function renderTLItem(it){
+  const major = it.major ? 'major' : '';
+  const timeParts = it.time.split(/[–\-]/);
+  const startTime = timeParts[0].trim();
+  const endTime = timeParts[1] ? timeParts[1].trim() : '';
+  return `
+    <div class="tl-item ${major}" data-time="${esc(startTime)}">
+      <div class="tl-time">
+        ${esc(startTime)}
+        ${endTime ? `<small>→ ${esc(endTime)}</small>` : ''}
+      </div>
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-text"><strong>${esc(it.label)}</strong></div>
+        ${it.note ? `<div class="tl-note">${esc(it.note)}</div>` : ''}
+        ${it.address ? `
+          <button class="tl-addr" data-addr="${esc(it.address)}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span class="addr-text">${esc(it.address)}</span>
+          </button>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+/* ---------- Modal ---------- */
+function renderModal(){
+  if (!state.modal) return;
+  // remove existing
+  const existing = app.querySelector('.modal-bg');
+  if (existing) existing.remove();
+
+  const day = TRIP[state.dayIdx];
+  let content = '';
+  let kicker = '';
+  let title = '';
+
+  if (state.modal === 'stories'){
+    kicker = day.stories.kicker;
+    title = day.stories.title;
+    content = day.stories.html;
+  } else if (state.modal === 'vocab'){
+    kicker = `Day ${day.id} · ${day.dateLabel}`;
+    title = '<em>Vocab</em> &amp; Tips';
+    const tipsHtml = (day.vocab.tips||[]).map(t=>`<div class="tip">${esc(t)}</div>`).join('');
+    const wordsHtml = (day.vocab.words||[]).map(v=>`
+      <div class="vocab-item">
+        <div class="vocab-word">${esc(v.w)} <small>${esc(v.lang)}</small></div>
+        <div class="vocab-meaning">${esc(v.meaning)}</div>
+      </div>
+    `).join('');
+    content = `
+      <h3>今日小贴士</h3>
+      ${tipsHtml}
+      <h3>词汇 · Vocabulary</h3>
+      <div class="vocab-list">${wordsHtml}</div>
+    `;
+  } else if (state.modal === 'stay'){
+    kicker = `Day ${day.id} · 今晚住哪`;
+    title = '<em>Stay</em> tonight';
+    const s = day.stay;
+    content = `
+      <div class="place-card featured">
+        <div class="pc-row">
+          <div class="pc-name">${esc(s.name)}</div>
+          <div class="pc-tag">今晚 · tonight</div>
+        </div>
+        <div class="pc-meta">${esc(s.meta)}</div>
+        <div class="pc-note">${esc(s.note)}</div>
+        <button class="pc-addr" data-addr="${esc(s.address)}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span class="at">${esc(s.address)}</span>
+        </button>
+      </div>
+    `;
+  } else if (state.modal === 'eat'){
+    kicker = `Day ${day.id} · 哪里吃饭`;
+    title = '<em>Where</em> to eat';
+    content = day.eat.map(e => `
+      <div class="place-card ${e.featured?'featured':''}">
+        <div class="pc-row">
+          <div class="pc-name">${esc(e.name)}</div>
+          <div class="pc-tag">${esc(e.tag||'')}</div>
+        </div>
+        <div class="pc-meta">${esc(e.meta||'')}</div>
+        <div class="pc-note">${esc(e.note||'')}</div>
+        ${e.address ? `<button class="pc-addr" data-addr="${esc(e.address)}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span class="at">${esc(e.address)}</span>
+        </button>` : ''}
+      </div>
+    `).join('');
+  }
+
+  const bg = document.createElement('div');
+  bg.className = 'modal-bg';
+  bg.innerHTML = `
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-handle"></div>
+      <div class="modal-head">
+        <div class="modal-title-wrap">
+          <div class="modal-kicker">${esc(kicker)}</div>
+          <h2 class="modal-title">${title}</h2>
+        </div>
+        <button class="modal-close" id="modalClose">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">${content}</div>
+    </div>
+  `;
+  app.appendChild(bg);
+
+  bg.addEventListener('click', ()=>{ state.modal=null; bg.remove(); });
+  bg.querySelector('#modalClose').addEventListener('click', ()=>{ state.modal=null; bg.remove(); });
+  bg.querySelectorAll('.pc-addr').forEach(b=>{
+    b.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      copyText(b.dataset.addr, b);
+    });
+  });
+}
+
+function render(){
+  if (state.view==='home') renderHome();
+  else renderDay();
+}
+
+/* Re-position now-line every minute */
+setInterval(()=>{
+  if (state.view==='day') positionNowLine();
+}, 60000);
+
+/* Boot */
+render();
+
+</script>
+</body>
+</html>
