@@ -600,6 +600,57 @@
       min-width: 0;
     }
 
+    /* address row: copy button + google maps link */
+    .addr-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      align-items: stretch;
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .addr-row .tl-addr,
+    .addr-row .pc-addr {
+      margin-top: 0;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .map-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      background: var(--blue-100);
+      border: 1px solid rgba(90, 125, 163, .45);
+      color: var(--blue-700);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 9px;
+      border-radius: 7px;
+      text-decoration: none;
+      flex-shrink: 0;
+      font-family: var(--sans);
+      transition: background .15s;
+    }
+
+    .map-link:active {
+      background: var(--blue-200);
+    }
+
+    .map-link svg {
+      width: 11px;
+      height: 11px;
+      flex-shrink: 0;
+    }
+
+    .place-card.featured .map-link {
+      background: rgba(244, 236, 219, .12);
+      color: var(--cream);
+      border-color: rgba(244, 236, 219, .3);
+    }
+
     /* FOOTER ~1/5 */
     .day-footer {
       flex: 0 0 auto;
@@ -1312,16 +1363,16 @@
         },
         eat: [
           {
-            featured: true, name: "Wilhelmshöher Hof", tag: "今晚推荐",
-            meta: "Seesen 老城 · 人均 €15–25",
-            note: "传统德餐：Schnitzel、香肠拼盘、Harz 山区野味。Seesen 老城餐馆周五通常开到 22–23 点。",
-            address: "Wilhelmshöher Hof, Seesen, Germany"
+            featured: true, name: "Hotel & Restaurant Wilhelmsbad", tag: "今晚推荐",
+            meta: "Seesen 市中心 · 周一–周六 17:30 起（周日休）· 人均 €15–30",
+            note: "国际菜 + 季节特色（Harz 山区时令）。周五晚营业 ✓，19:00 到刚好。电话 05381-1035。",
+            address: "Frankfurter Straße 10, 38723 Seesen, Germany"
           },
           {
-            name: "Restaurant am Theater", tag: "备选",
-            meta: "Seesen 老城",
-            note: "传统德式。",
-            address: "Restaurant am Theater, Seesen, Germany"
+            name: "Zum Alten Fritz", tag: "备选 · 更实惠",
+            meta: "同一条街 · 传统德餐 · 人均 €12–20",
+            note: "Hotel-Restaurant，Schnitzel、德式家常菜。跟 Wilhelmsbad 只隔几个门牌，一家没位就换另一家。",
+            address: "Frankfurter Straße 2, 38723 Seesen, Germany"
           }
         ],
         timeline: [
@@ -1351,7 +1402,7 @@
           },
           { time: "17:00–17:45", label: "开车到 Seesen", note: "B27 → A7，约 50 km / 45 分钟。" },
           { time: "17:45–18:30", label: "Seesen 入住" },
-          { time: "19:00", label: "晚餐 · Wilhelmshöher Hof", note: "Seesen 老城传统德餐。" }
+          { time: "19:00", label: "晚餐 · Hotel Wilhelmsbad", note: "Frankfurter Str. 10，周五 17:30 起营业。备选：同街 Zum Alten Fritz。", address: "Frankfurter Straße 10, 38723 Seesen, Germany" }
         ],
         stories: {
           kicker: "哥廷根 · The Mathematical Holy City",
@@ -1425,7 +1476,7 @@
           {
             featured: true, name: "Christianshavns Færgecafé", tag: "今晚推荐",
             meta: "Nyhavn 步行 15 分钟过桥 · 人均 200–300 DKK · 4.5 星",
-            note: "港口边老渡轮上吃饭，30+ 种自家酿 snaps，咖喱鲱鱼 karrysild。周六 11:30–22:30。",
+            note: "港口边老渡轮上吃饭，30+ 种自家酿 snaps，咖喱鲱鱼 karrysild。周六 11:30–22:00，厨房晚餐时段 18:00–21:30——18:30 到正好。",
             address: "Strandgade 50, 1401 København, Denmark"
           },
           {
@@ -1561,9 +1612,9 @@
         },
         eat: [
           {
-            featured: true, name: "Hamnkrogen", tag: "今晚推荐",
-            meta: "Gränna 港口北 · 夏季 11:30–22:00 · 人均 350–500 SEK · 4.0 星",
-            note: "湖景餐厅。Vätternröding（维特恩湖红点鲑）——只产于这一带几个深湖，地理学独家菜。",
+            featured: true, name: "Hamnkrogen", tag: "今晚推荐 · 先电话确认",
+            meta: "Gränna 港口 · 夏季营业但时间不固定 · 人均 350–500 SEK",
+            note: "湖景餐厅。Vätternröding（维特恩湖红点鲑）——只产于这一带几个深湖，地理学独家菜。⚠️ 营业时间只发 Instagram（@grennahamnkrogen），路上打 0390-100 38 确认；没开就去同码头的 Pir Kro。",
             address: "Amiralsvägen 52, 563 31 Gränna, Sweden"
           },
           {
@@ -1573,10 +1624,10 @@
             address: "Vindeboder 20, 4000 Roskilde, Denmark"
           },
           {
-            name: "Pir Kro", tag: "Gränna 备选",
-            meta: "港口同位置 · 人均 250–400 SEK",
-            note: "鱼 + pizza 多选。",
-            address: "Hamnvägen, Gränna, Sweden"
+            name: "Pir Kro", tag: "Gränna 备选 · 更实惠",
+            meta: "港口同码头 · 3–10 月营业 · 人均 150–300 SEK",
+            note: "fish & chips、pizza、à la carte 鱼和肉都有，旁边还有 40+ 口味冰淇淋吧。电话 0390-415 50。",
+            address: "Amiralsvägen 63, 563 31 Gränna, Sweden"
           }
         ],
         timeline: [
@@ -1627,16 +1678,16 @@
             address: "Amiralsvägen 48, 563 31 Gränna, Sweden"
           },
           {
-            time: "20:00–21:30", label: "Gränna 湖景晚餐 · Hamnkrogen", major: true,
-            note: "Vätternröding 红点鲑——只产于维特恩湖这种深+低温的冰川湖。",
+            time: "20:00–21:15", label: "Gränna 湖景晚餐 · Hamnkrogen", major: true,
+            note: "Vätternröding 红点鲑——只产于维特恩湖这种深+低温的冰川湖。（营业时间不固定，路上先打 0390-100 38 确认；没开去同码头 Pir Kro。）",
             address: "Amiralsvägen 52, 563 31 Gränna, Sweden"
           },
           {
-            time: "20:00–20:30", label: "沿主街 Brahegatan 快速逛糖店看橱窗",
-            note: "polkagris 1859 年 Amalia Eriksson 发明——寡妇带女儿靠卖糖养家。Gränna Bolchekogeri 是发源地。",
+            time: "21:15–21:35", label: "饭后沿主街 Brahegatan 逛糖店看橱窗",
+            note: "港口上坡步行 8 分钟，白夜还亮。polkagris 1859 年 Amalia Eriksson 发明——寡妇带女儿靠卖糖养家。Gränna Polkagriskokeri 是发源地。",
             address: "Brahegatan 59, 563 31 Gränna, Sweden"
           },
-          { time: "21:30", label: "离开 Gränna，E4 北上 45 km 到 Mjölby" },
+          { time: "21:35", label: "离开 Gränna，E4 北上 45 km 到 Mjölby" },
           {
             time: "22:15", label: "抵 Mjölby 住宿",
             address: "Gullstigen Hättorp 2, Mjölby, Östergötlands län 595 93"
@@ -1672,7 +1723,8 @@
             "Roskilde Cathedral 周日 13:00 开门是硬约束——12:30–13:00 是排队 + 等开门窗口。",
             "厄勒海峡桥：车牌识别通道最快。Øresundsbron 双向收费——D6 回程再付一次。",
             "D2 拥堵费：周日全天免费。",
-            "polkagris demo（13:00 / 15:00 / 16:30）已错过，但 20:00–20:30 沿主街看橱窗能拿回大半体验。",
+            "Hamnkrogen 营业时间不固定（只发 Instagram @grennahamnkrogen）——下午在车上打 0390-100 38 确认今晚开不开；没开就去同码头的 Pir Kro（Amiralsvägen 63，更实惠）。",
+            "polkagris demo（13:00 / 15:00 / 16:30）已错过，但饭后 21:15–21:35 沿主街看橱窗能拿回大半体验。",
             "19:30 前在 Jönköping 北郊加油 + 上厕所（油价比 Mjölby 低）。"
           ],
           words: [
@@ -1715,7 +1767,7 @@
           },
           {
             name: "Odinsborg · D3 午餐", tag: "维京风",
-            meta: "老乌普萨拉 · 仅午餐，到 17:00 · 人均 200–400 SEK",
+            meta: "老乌普萨拉 · 周一 10:00–17:00，热午餐 11:00–15:00 · 人均 200–400 SEK",
             note: "mjöd 蜜酒（维京牛角杯端上来）+ 鲱鱼拼盘 + 烤肉。提前订位。",
             address: "Ärnavägen 4, 754 40 Uppsala, Sweden"
           },
@@ -1765,12 +1817,12 @@
           },
           {
             time: "18:30–19:30", label: "坐地铁绿线进 T-Centralen / Gamla Stan",
-            note: "T10/T11 Hässelby Strand → 30 分钟，39 SEK。"
+            note: "绿线 T19（Hässelby strand ↔ Hagsätra），直达 Gamla stan 约 35 分钟，单程 42 SEK。"
           },
           {
             time: "19:30–21:30", label: "老城晚餐 · Tradition", major: true,
             note: "白夜亮到 22:00 后。",
-            address: "Österlånggatan 1, 113 53 Stockholm, Sweden"
+            address: "Österlånggatan 1, 111 31 Stockholm, Sweden"
           }
         ],
         stories: {
@@ -1799,10 +1851,11 @@
         },
         vocab: {
           tips: [
-            "Odinsborg 夏季周一开 ✅。提前订位。",
+            "Odinsborg 夏季周一开 ✅（10:00–17:00，热午餐 11–15）。提前订位。",
             "D3 拥堵费：绕过市中心走 E18 / Bergslagsvägen，最多 0–22 SEK。",
             "下载 AR app Gamlis AR——在王墓土丘现场看复原。",
-            "Hässelby 是地铁绿线 Hässelby Strand 终点 → T-Centralen 30 分钟。"
+            "斯德哥尔摩公交买票：进闸机直接拍非接触银行卡（每人拍自己的卡）即是一张 75 分钟单程票（42 SEK），或用 SL app 买票。车上不卖票、不收现金。",
+            "Hässelby 是绿线 T19 的 Hässelby strand 终点站 → T-Centralen / Gamla stan 直达约 30–35 分钟。"
           ],
           words: [
             { w: "runsten", lang: "瑞", meaning: "卢恩石" },
@@ -1887,10 +1940,16 @@
             meta: "Södermalm · 周二 11:00–00:00 · 人均 350–500 SEK",
             note: "传统瑞典酒馆。",
             address: "Tjärhovsgatan 4, 116 21 Stockholm, Sweden"
+          },
+          {
+            name: "Meatballs for the People", tag: "实惠备选",
+            meta: "Södermalm · 周二 11:00–22:30 · 人均 200–300 SEK",
+            note: "肉丸专门店，十几种肉丸（经典奶油汁 / 驼鹿 / 野猪 / 三文鱼），离 Pelikan 步行 8 分钟。",
+            address: "Nytorgsgatan 30, 116 40 Stockholm, Sweden"
           }
         ],
         timeline: [
-          { time: "08:30", label: "Hässelby 地铁出门", note: "绿线 T10/T11 → T-Centralen / Gamla stan，30 分钟。" },
+          { time: "08:30", label: "Hässelby 地铁出门", note: "绿线 T19（Hässelby strand 始发）→ T-Centralen / Gamla stan，约 30–35 分钟。上车前在闸机拍银行卡或用 SL app 买 24h 票。" },
           {
             time: "09:30–11:00", label: "瑞典皇宫 Kungliga slottet", major: true,
             note: "10:00 开门。门票 220 SEK 4 合 1：国家公寓 + 军械库 + 三王冠博物馆 + Gustav III 古董博物馆。",
@@ -1916,7 +1975,8 @@
             address: "Narvavägen 17, 114 84 Stockholm, Sweden"
           },
           {
-            time: "17:00–17:30", label: "步行/地铁到 Stadshuset",
+            time: "17:00–17:30", label: "地铁到 Stadshuset",
+            note: "步行要 40+ 分钟，不合理。走 400 米到 Karlaplan 站坐红线 T13 → T-Centralen，出站步行 8 分钟到市政厅。",
             address: "Hantverkargatan 1, 111 52 Stockholm, Sweden"
           },
           {
@@ -1926,14 +1986,15 @@
           },
           {
             time: "18:30–19:30", label: "最美地铁站打卡", major: true,
-            note: "T-Centralen（蓝白叶子）→ Stadion（彩虹）→ Rådhuset（红色洞穴）→ Solna Centrum（绿森林+红天空）。",
+            note: "顺路线：市政厅步行 5 分钟到 Rådhuset（蓝线，红色洞穴）→ 蓝线 T11 往 Akalla 方向 3 站到 Solna Centrum（绿森林+红天空）→ T11 折返到 T-Centralen（蓝线站台层，蓝白藤蔓）→ 换红线 T14 往 Mörby centrum 方向 2 站到 Stadion（彩虹）→ T14 回 T-Centralen 换绿线 T19 去 Skanstull 吃晚饭。",
             address: "T-Centralen, 111 20 Stockholm, Sweden"
           },
           {
             time: "19:30–20:30", label: "Södermalm 晚餐 · Pelikan",
+            note: "Skanstull 站出来步行 6 分钟。",
             address: "Blekingegatan 40, 116 62 Stockholm, Sweden"
           },
-          { time: "20:30", label: "地铁回 Hässelby" }
+          { time: "20:30", label: "地铁回 Hässelby", note: "Skanstull 上车，绿线 T19 往 Hässelby strand 方向一趟直达，不用换乘。" }
         ],
         stories: {
           kicker: "Stockholm · 大众艺术权的政治宣示",
@@ -1968,8 +2029,8 @@
           tips: [
             "Historiska 和 Vasa 二选一——主题契合度选 Historiska（维京世界常设展）。",
             "卫兵换岗占位提前 20 分钟。",
-            "地铁单程 39 SEK，可以买 24h 票 175 SEK。",
-            "T-Centralen / Stadion / Rådhuset / Solna Centrum 是必打卡的地铁站。"
+            "买票：今天全天至少 6 程地铁，人手一张 24h 票（175 SEK，SL app 里买）最划算；单程 42 SEK / 75 分钟。也可全程用同一张非接触银行卡在闸机拍卡，系统自动按天封顶。",
+            "地铁艺术站对应线路：Rådhuset + Solna Centrum + T-Centralen 彩绘站台都在蓝线（T10/T11，Solna Centrum 要坐 T11 往 Akalla 方向）；Stadion 在红线 T14。晚饭前按 Rådhuset → Solna Centrum → T-Centralen → Stadion 顺序刷完，最后绿线 T19 去 Skanstull。"
           ],
           words: [
             { w: "slott", lang: "瑞", meaning: "城堡 / 宫殿" },
@@ -2039,14 +2100,14 @@
         eat: [
           {
             featured: true, name: "Feskekôrka 海鲜餐厅", tag: "今晚推荐",
-            meta: "哥德堡 · 周三 10:00–21:00 · 人均 350–600 SEK",
-            note: "'鱼教堂'建筑里的海鲜餐厅。1874 开业的鱼市——建筑师 von Gegerfelt 设计时玩讽刺：哥德堡人对海鲜的尊重就刻在尖顶里。",
+            meta: "哥德堡 · 鱼档白天营业，馆内餐厅周三开到 23:00 · 人均 350–600 SEK",
+            note: "'鱼教堂'建筑里的海鲜餐厅（2024 翻修后馆内有三家餐厅+snaps 吧，丰俭由人——吧台简餐比坐下点菜便宜一半）。1874 开业的鱼市——建筑师 von Gegerfelt 设计时玩讽刺：哥德堡人对海鲜的尊重就刻在尖顶里。",
             address: "Fisktorget 4, 411 20 Göteborg, Sweden"
           },
           {
-            name: "Sjömagasinet", tag: "米其林一星",
-            meta: "周三 11:30–23:00 · 人均 800–1500 SEK",
-            note: "哥德堡米其林一星海鲜。",
+            name: "Sjömagasinet", tag: "高档备选",
+            meta: "周三 11:30–22:30 · 人均 800–1500 SEK",
+            note: "1775 年东印度公司仓库里的海鲜名店（1999–2010、2013–2018 曾持米其林星，现为指南推荐）。预算有限就守住 Feskekôrka。",
             address: "Adolf Edelsvärds Gata 5, 414 51 Göteborg, Sweden"
           }
         ],
@@ -2140,7 +2201,7 @@
         drive: "440 km · 5 h 纯开 + 厄勒海峡桥",
         stay: {
           name: "A&O Copenhagen · 两个房",
-          meta: "Sydhavn（地铁 M1/M3）+ Nørrebro（市中心北）",
+          meta: "Sydhavn（地铁 M4 Mozarts Plads 步行 6 分钟）+ Nørrebro（市中心北）",
           address: "A&O Copenhagen Sydhavn, Sydhavns Pl. 4, 2450 København, Denmark",
           note: "另一个房：A&O Copenhagen Nørrebro, Tagensvej 135-137, 2200 København。A&O 停车通常付费街边或附近停车场。"
         },
@@ -2150,16 +2211,16 @@
           title: "<em>Göteborg → CPH</em> shop",
           window: {
             kicker: "今日两个窗口",
-            time: "08:30–09:30 早 · 16:00–18:00 晚",
+            time: "08:30–09:30 早 · 16:50–18:00 晚",
             where: "<strong>早</strong>: 哥德堡 Haga Nygata,人少光线好,逛小店糖店咖啡豆。<strong>晚</strong>: 入住后到 Strøget 步行街热身,看准位置——D7 早上才是哥本哈根真正的主战场。"
           },
           sections: [
             {
               title: "HAGA 早上重点 (哥德堡)",
               items: [
-                "<strong>Da Matteo</strong> — 哥德堡本土精品咖啡烘焙坊,HAGA 区就有店,买咖啡豆带走",
-                "<strong>Café Husaren</strong> — 巨型肉桂卷 Hagabullen 是镇店,周边纪念品也好买",
-                "<strong>Polkagris 糖店</strong> — 红白条纹糖,HAGA 老街上有店",
+                "<strong>Café Husaren</strong> @ Haga Nygata 28 — 巨型肉桂卷 Hagabullen 是镇店,周边纪念品也好买",
+                "<strong>糖果店</strong> @ Haga Nygata 11 — polkagris 红白条纹糖、甘草糖都有",
+                "<strong>Da Matteo</strong> 咖啡豆 — 注意:烘焙坊总店在 Magasinsgatan 17A(不在 Haga,步行 10 分钟);Haga 边上 Hagabadet(Södra Allégatan 3)有分店",
                 "小设计师店、手工艺、二手书店,鹅卵石街一路逛过去"
               ]
             },
@@ -2175,15 +2236,21 @@
           ],
           tips: {
             title: "节奏建议",
-            body: "<p>HAGA 一上午只能 1 小时——挑 Da Matteo 咖啡豆 + 1 件设计小件足够,不要恋战(D6 行程很满,12 点要上 E6 南下马尔默)。</p><p>哥本哈根 16:00–18:00 是<strong>探路</strong>,不是主战场——把 Strøget 走通,Royal Copenhagen 和 Illum 的位置看准,D7 早上 08:30 开门直接进。</p>"
+            body: "<p>HAGA 一上午只能 1 小时——糖果店带点 polkagris + 1 件设计小件足够,不要恋战(D6 行程很满,10:30 要上 E6 南下马尔默)。咖啡豆认准 Da Matteo 的话要多走 10 分钟去 Magasinsgatan 17A。</p><p>哥本哈根 16:50–18:00 是<strong>探路</strong>,不是主战场——把 Strøget 走通,Royal Copenhagen 和 Illum 的位置看准,D7 早上 08:30 开门直接进。</p>"
           }
         },
         eat: [
           {
             featured: true, name: "Restaurant Palægade", tag: "今晚推荐",
-            meta: "哥本哈根 · 周四 11:30–17 + 18–00 · 人均 400–700 DKK · 4.6 星",
-            note: "经典丹麦菜 + 法式。D7 已经预留 Schønnemann + Barr，今晚选 Palægade。",
+            meta: "哥本哈根 · 午餐每天 11:30–17，晚餐周三–周六 18:00–00:00（周四 ✓）· 人均 400–700 DKK",
+            note: "smørrebrød 名店的晚餐版：经典丹麦菜 + 法式。D7 已经预留 Schønnemann + Barr，今晚选 Palægade。要订位。",
             address: "Palægade 8, 1261 København, Denmark"
+          },
+          {
+            name: "Café Halvvejen", tag: "实惠备选",
+            meta: "Rundetårn 圆塔旁 · 周一–周四 11:00–02:00 · 人均 100–200 DKK",
+            note: "老派丹麦小酒馆：传统 frokost 菜 + 生啤，本地人多。厨房比酒吧关得早，晚去先打 +45 33 11 91 12 确认。",
+            address: "Krystalgade 11, 1172 København, Denmark"
           },
           {
             name: "Bullen — Två Krögare · D6 午餐", tag: "马尔默",
@@ -2199,9 +2266,9 @@
           },
           {
             name: "Restaurant Barr", tag: "备选",
-            meta: "哥本哈根 · 人均 600–900 DKK",
-            note: "前 Noma 团队（D7 预留）。",
-            address: "Refshalevej 96, 1432 København, Denmark"
+            meta: "哥本哈根 · 周四 17:00–23:30 · 人均 600–900 DKK",
+            note: "前 Noma 团队，在老 Noma 原址（D7 预留）。",
+            address: "Strandgade 93, 1401 København, Denmark"
           }
         ],
         timeline: [
@@ -2214,7 +2281,7 @@
           },
           {
             time: "08:30–09:30", label: "HAGA 老街区 + 早上购物", major: true, shop: true,
-            note: "鹅卵石街、19 世纪 landshövdingehus,早上人少最美。Haga Nygata 小店、糖店、Da Matteo 咖啡豆烘焙坊都在这条街——D5 没买的现在补。",
+            note: "鹅卵石街、19 世纪 landshövdingehus,早上人少最美。Haga Nygata 小店、糖果店（11 号）都在这条街——D5 没买的现在补。",
             address: "Haga Nygata, 411 22 Göteborg, Sweden"
           },
           {
@@ -2232,40 +2299,40 @@
             note: "中途加油上厕所。"
           },
           {
-            time: "13:00–13:30", label: "抵马尔默 停车",
+            time: "13:00–13:15", label: "抵马尔默 停车",
             address: "Anna, Kaptensgatan 4, 211 41 Malmö, Sweden"
           },
           {
-            time: "13:00–14:30", label: "马尔默午餐 + 城堡", major: true,
-            note: "13:30 到 → Saltimporten 还来得及；之后 → Bullen。",
-            address: "Storgatan 35, 211 41 Malmö, Sweden"
+            time: "13:15–14:15", label: "午餐 · Bullen", major: true,
+            note: "停车场步行 5 分钟。马尔默最经典传统瑞典餐厅，周四 11:30–01:00 ✓。（更省的选项：13:30 前赶到港区 Saltimporten，仅供餐到 14:00。）",
+            address: "Storgatan 35, 211 42 Malmö, Sweden"
           },
           {
-            time: "13:30–14:00", label: "马尔默城堡 Malmöhus",
-            note: "15 世纪丹麦人建，门票 60 SEK，周一闭馆——周四 ✓。1530s Christian III 重建成斯堪的纳维亚最古老的文艺复兴城堡。",
-            address: "Malmöhusvägen 6, 211 18 Malmö, Sweden"
-          },
-          {
-            time: "14:00–14:20", label: "小广场 Lilla Torg 喝咖啡",
-            note: "1592 开辟。16–17 世纪汉萨风格三角山墙红砖房。",
+            time: "14:15–14:40", label: "小广场 Lilla Torg",
+            note: "Bullen 步行 5 分钟。1592 开辟，16–17 世纪汉萨风格三角山墙红砖房，喝杯咖啡。",
             address: "Lilla torg, 211 34 Malmö, Sweden"
           },
           {
-            time: "14:20–14:30", label: "旋转大楼 Turning Torso 外观拍照",
-            note: "2005 Calatrava 设计，190 米旋转 90 度。",
+            time: "14:40–15:10", label: "马尔默城堡 Malmöhus",
+            note: "Lilla Torg 往西穿 Kungsparken 步行 10 分钟。今天看外观+护城河即可（进馆 60 SEK、周四开放，但时间不够）。1530s Christian III 重建，斯堪的纳维亚最古老的文艺复兴城堡。",
+            address: "Malmöhusvägen 6, 211 18 Malmö, Sweden"
+          },
+          {
+            time: "15:10–15:30", label: "取车 → 车览旋转大楼 Turning Torso",
+            note: "回停车场取车，开车经西港 Västra Hamnen 看一眼不下车（2005 Calatrava 设计，190 米旋转 90 度），顺路上桥。",
             address: "Lilla Varvsgatan 14, 211 15 Malmö, Sweden"
           },
           {
-            time: "14:30–15:10", label: "跨厄勒海峡大桥回哥本哈根", major: true,
+            time: "15:30–16:10", label: "跨厄勒海峡大桥回哥本哈根", major: true,
             note: "再付一次（网上 423 / 现场 470 DKK）。"
           },
           {
-            time: "15:10–16:00", label: "抵哥本哈根，A&O 办入住",
+            time: "16:10–16:50", label: "抵哥本哈根，A&O 办入住",
             address: "Sydhavns Pl. 4, 2450 København, Denmark"
           },
           {
-            time: "16:00–18:00", label: "Strøget 步行街初探 (热身)", shop: true,
-            note: "从市政厅 Rådhuspladsen 走到 Kongens Nytorv,主要品牌全在这条线上。今天主要 window shopping + 看准 Royal Copenhagen 旗舰店、Illum 百货位置,主战场 D7 早上再来。",
+            time: "16:50–18:00", label: "Strøget 步行街初探 (热身)", shop: true,
+            note: "酒店步行 6 分钟到 Mozarts Plads 站，地铁 M4 直达 Rådhuspladsen 约 12 分钟（步行 4 km 不现实）。从市政厅走到 Kongens Nytorv,主要品牌全在这条线上。今天主要 window shopping + 看准 Royal Copenhagen 旗舰店、Illum 百货位置,主战场 D7 早上再来。",
             address: "Strøget, 1160 København, Denmark"
           },
           {
@@ -2298,10 +2365,12 @@
         },
         vocab: {
           tips: [
-            "Saltimporten 仅工作日 11:00–14:00——D6 周四是工作日刚好 ✓。13:30 到马尔默还来得及。",
-            "Malmöhus 周一闭馆，周四开。门票 60 SEK。",
-            "A&O 两个房：Sydhavn 在西南港口区（地铁 M1/M3）；Nørrebro 在市中心北。",
-            "Bastard 餐厅已永久关闭——Bullen 是新增替代。",
+            "马尔默步行环线：停车（Kaptensgatan）→ Bullen（Storgatan 35）→ Lilla Torg → 穿 Kungsparken 到 Malmöhus → 回停车场，全程 2.5 km；Turning Torso 开车顺路看，不用走。",
+            "Saltimporten 仅工作日 11:00–14:00——想吃它就得 13:30 前到马尔默，否则按计划吃 Bullen（周四 11:30–01:00）。",
+            "Malmöhus 周一闭馆，周四开。门票 60 SEK（今天时间只够外观）。",
+            "哥本哈根公交买票：用官方 Rejsebillet app（旧 DOT Billetter 2025 年底已停）或地铁站自动售票机；市中心 2 区单程 24 DKK，75 分钟内通用地铁/S-tog/公交。酒店 → 市中心坐 M4：Mozarts Plads → Rådhuspladsen 直达。",
+            "A&O 两个房：Sydhavn 在西南港口区（M4 Mozarts Plads）；Nørrebro 在市中心北。",
+            "Bastard 餐厅已永久关闭——Bullen 是替代（地址电话已核实：Storgatan 35，+46 40 12 12 41）。",
             "D6 = 7/9 周四：瑞典拥堵费免费日 + 离开瑞典，0 费用。"
           ],
           words: [
@@ -2392,8 +2461,14 @@
           {
             featured: true, name: "Restaurant Barr", tag: "今晚推荐",
             meta: "周五 17:00–23:30 · 人均 600–900 DKK · 4.3 星",
-            note: "前 Noma 团队，New Nordic。Refshaleøen 工业港区改造。",
-            address: "Refshalevej 96, 1432 København, Denmark"
+            note: "前 Noma 团队，New Nordic，开在老 Noma 原址（Christianshavn 港边老仓库）。⚠️ 地址是 Strandgade 93——别导航到 Refshalevej 96，那是现在的 Noma。",
+            address: "Strandgade 93, 1401 København, Denmark"
+          },
+          {
+            name: "Broens Gadekøkken", tag: "实惠备选 · 隔壁",
+            meta: "Inderhavnsbroen 桥头 · 夏季每天约 11:30–22:00 · 人均 100–150 DKK",
+            note: "Barr 隔壁的露天街头美食市场（Gasoline Grill 汉堡等十几档），Barr 没订到位或想省钱就在这吃，看着运河日落。",
+            address: "Strandgade 95, 1401 København, Denmark"
           },
           {
             name: "Schønnemann · D7 午餐", tag: "经典 smørrebrød",
@@ -2440,7 +2515,8 @@
           },
           {
             time: "19:00–20:30", label: "晚餐 · Restaurant Barr", major: true,
-            address: "Refshalevej 96, 1432 København, Denmark"
+            note: "Kastellet → Barr：沿港边走过 Inderhavnsbroen 桥约 25 分钟，顺路看 Nyhavn 夜景；或开车 10 分钟。省钱选项：隔壁 Broens Gadekøkken 街头美食市场。",
+            address: "Strandgade 93, 1401 København, Denmark"
           },
           {
             time: "20:30–21:00", label: "开车回 Farum 25 km",
@@ -2480,9 +2556,11 @@
         vocab: {
           tips: [
             "Nationalmuseet 网上预订省 10%（135 vs 150 DKK）。",
+            "早上从 A&O Sydhavn 进城：M4 Mozarts Plads → Rådhuspladsen 直达约 12 分钟，Strøget 西端就在站口。买票用 Rejsebillet app 或站内售票机，2 区单程 24 DKK；当天要坐 3 程以上就买 City Pass Small 24h（1–4 区约 100 DKK）更省心。",
+            "白天市中心一条线（Strøget → 阿美琳堡 → 国博 → Marmorkirken → Kastellet）全程步行可达，不用坐车。",
             "Marmorkirken 圆顶夏季 13:00 一次性开放——与午餐时间冲突，放弃登顶。",
             "卫兵换岗 12:00 准时——11:30 占位最佳。",
-            "Schønnemann 旺季提前 1 周订位。"
+            "Schønnemann 旺季提前 1 周订位；Barr 也要订位——订不到就去隔壁 Broens Gadekøkken。"
           ],
           words: [
             { w: "smørrebrød", lang: "丹", meaning: "开放式三明治" },
@@ -2667,9 +2745,9 @@
         },
         eat: [
           {
-            featured: true, name: "Restaurant Lohmann", tag: "今晚推荐",
-            meta: "Kassel 老牌德餐",
-            note: "传统黑森州菜。",
+            featured: true, name: "Gaststätte Lohmann", tag: "今晚推荐",
+            meta: "Kassel 老牌德餐 · 周日 12:00–22:00 热菜不间断 ✓ · 人均 €15–25",
+            note: "传统黑森州菜 + 啤酒花园。电话 0561-7016875。",
             address: "Königstor 8, 34117 Kassel, Germany"
           },
           {
@@ -2968,6 +3046,14 @@
       return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     }
 
+    /* Google Maps deep link next to every copyable address */
+    const MAP_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>`;
+    function mapLinkHtml(addr) {
+      if (!addr || addr === '—') return '';
+      const href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(addr);
+      return `<a class="map-link" href="${esc(href)}" target="_blank" rel="noopener" aria-label="Open in Google Maps">${MAP_ICON}<span>地图</span></a>`;
+    }
+
     /* ---------- HOME view ---------- */
     function renderHome() {
       const tIdx = todayDayIdx();
@@ -3143,6 +3229,9 @@
           copyText(b.dataset.addr, b);
         });
       });
+      app.querySelectorAll('.map-link').forEach(a => {
+        a.addEventListener('click', (e) => e.stopPropagation());
+      });
 
       // now-line for today
       requestAnimationFrame(() => {
@@ -3178,10 +3267,13 @@
         <div class="tl-text">${it.shop ? '<span class="shop-tag">Shop</span>' : ''}<strong>${esc(it.label)}</strong></div>
         ${it.note ? `<div class="tl-note">${esc(it.note)}</div>` : ''}
         ${it.address ? `
-          <button class="tl-addr" data-addr="${esc(it.address)}">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <span class="addr-text">${esc(it.address)}</span>
-          </button>` : ''}
+          <div class="addr-row">
+            <button class="tl-addr" data-addr="${esc(it.address)}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span class="addr-text">${esc(it.address)}</span>
+            </button>
+            ${mapLinkHtml(it.address)}
+          </div>` : ''}
       </div>
     </div>
   `;
@@ -3231,10 +3323,13 @@
         </div>
         <div class="pc-meta">${esc(s.meta)}</div>
         <div class="pc-note">${esc(s.note)}</div>
-        <button class="pc-addr" data-addr="${esc(s.address)}">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <span class="at">${esc(s.address)}</span>
-        </button>
+        <div class="addr-row">
+          <button class="pc-addr" data-addr="${esc(s.address)}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span class="at">${esc(s.address)}</span>
+          </button>
+          ${mapLinkHtml(s.address)}
+        </div>
       </div>
     `;
       } else if (state.modal === 'eat') {
@@ -3248,10 +3343,13 @@
         </div>
         <div class="pc-meta">${esc(e.meta || '')}</div>
         <div class="pc-note">${esc(e.note || '')}</div>
-        ${e.address ? `<button class="pc-addr" data-addr="${esc(e.address)}">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <span class="at">${esc(e.address)}</span>
-        </button>` : ''}
+        ${e.address ? `<div class="addr-row">
+          <button class="pc-addr" data-addr="${esc(e.address)}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span class="at">${esc(e.address)}</span>
+          </button>
+          ${mapLinkHtml(e.address)}
+        </div>` : ''}
       </div>
     `).join('');
       } else if (state.modal === 'shop') {
@@ -3308,6 +3406,9 @@
           e.stopPropagation();
           copyText(b.dataset.addr, b);
         });
+      });
+      bg.querySelectorAll('.map-link').forEach(a => {
+        a.addEventListener('click', (e) => e.stopPropagation());
       });
     }
 
